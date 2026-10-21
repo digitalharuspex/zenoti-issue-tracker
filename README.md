@@ -1,31 +1,48 @@
 # Zenoti Issue Tracker
 
-A one-page tracker for Zenoti issues at FPT / Planet Fitness México. It uses an ITIL priority matrix, SLA clocks on a business calendar, attention levels (N1–N3) and the escalation clauses E01–E15. Every change you make on the page is committed to this repository, so the site always shows the latest data.
+A one-page tracker for Zenoti issues at FPT / Planet Fitness México. It uses an ITIL priority matrix, SLA clocks on a business calendar, attention levels (N1–N3) and the escalation clauses E01–E15. Every change you make on the page is committed to GitHub, so the site always shows the latest data.
 
 | File | What it is |
 |---|---|
 | `index.html` | The tracker page (GitHub Pages serves it). |
-| `issues.js` | The data: issues plus the rules (priorities, SLA targets, calendar, clauses, tags). The page reads it and writes it back through the GitHub API. |
+| `source.js` | Optional. Points the page to the repository that holds the data, such as a private one. |
+| `issues.js` | The data: issues plus the rules (priorities, SLA targets, calendar, clauses, tags). Keep it in the private data repository. |
 | `.nojekyll` | Tells GitHub Pages to serve the files as they are. |
 
 ## 1. Publish the page
 
-1. Put the three files in the repository (for example `digitalharuspex/zenoti-issue-tracker`) on the `main` branch.
+1. Keep `index.html`, `source.js`, `README.md` and `.nojekyll` in the public repository `zenoti-issue-tracker`.
 2. **Settings → Pages → Build and deployment → Deploy from a branch → `main` / root.**
-3. The site appears at `https://<owner>.github.io/<repository>/`. The page detects the owner and repository from that address.
+3. The site appears at `https://<owner>.github.io/zenoti-issue-tracker/`.
 
-> **Privacy:** a GitHub Pages site is public, and so is `issues.js` in a public repository. This data names vendors, internal incidents and revenue impact. To keep it private, store `issues.js` in a **private** repository. Then, in **Settings → Save to GitHub**, point Owner/Repository to that private repository. The public page shows data only to people who enter a token.
+## 2. Keep the data private
 
-## 2. Turn on saving (once per browser)
+On a free GitHub account, Pages publishes only public repositories, and anything in a public repository can be read. So the tool and the data live apart:
+
+| Repository | Visibility | Contents |
+|---|---|---|
+| `zenoti-issue-tracker` | Public | The page (no issue data) |
+| `zenoti-issue-data` | **Private** | `issues.js` |
+
+`source.js` in the public repository tells the page where the data is:
+
+```js
+window.ZENOTI_SOURCE = { owner: 'digitalharuspex', repo: 'zenoti-issue-data', path: 'issues.js', private: true };
+```
+
+- Visitors without access see an empty, locked page.
+- Only people you add to `zenoti-issue-data` (repository **Settings → Collaborators**) can load the issues, using their own token. Give view-only colleagues the **Read** role.
+
+## 3. Turn on saving (once per browser)
 
 1. Create a token:
-   - **Repository in your own account:** GitHub → Settings → Developer settings → **Fine-grained tokens** → Generate new token. Repository access: *Only select repositories* → this repository. Permissions: **Contents → Read and write**. Set an expiration date.
-   - **Someone else's personal repository** (you are a collaborator): fine-grained tokens cannot reach it. Use a **classic token** with `public_repo` (public repository) or `repo` (private).
-2. Open the site → **Settings** → paste the token → **Save and connect**. The header pill should read **Saved to GitHub · owner/repo**.
+   - **The owner of `zenoti-issue-data`:** GitHub → Settings → Developer settings → **Fine-grained tokens** → Generate new token. Repository access: *Only select repositories* → `zenoti-issue-data`. Permissions: **Contents → Read and write** (or Read-only, for viewing). Set an expiration date.
+   - **Collaborators on a personal-account repository:** fine-grained tokens cannot reach someone else's personal repository. Use a **classic token** with the `repo` scope. Alternatively, move both repositories to a free GitHub organization; then every member can use a fine-grained token limited to `zenoti-issue-data`.
+2. Open the site → **Settings** → paste the token → **Save and connect**. The header pill should read **Saved to GitHub · digitalharuspex/zenoti-issue-data**.
 
-The token is stored only in that browser's localStorage. It is never written to the repository. Each editor uses their own token. Without a token the page is **read-only**, and any edits stay in that browser until a token is added.
+The token is stored only in that browser's localStorage and is never written to a repository. **Forget token** removes it and hides the data again.
 
-## 3. Everyday use
+## 4. Everyday use
 
 - **+ New issue** opens the intake. Set **Impact** and **Urgency** to get the ITIL priority, and **Reported to Zenoti** to start the SLA clocks.
 - Click a row to update it. Use **Activity log → Add update** for each substantive update. Tick *This is a Zenoti response* to also record the vendor's reply time.
@@ -33,7 +50,7 @@ The token is stored only in that browser's localStorage. It is never written to 
 - If someone else saved the same issue after you opened it, the page asks whether to keep your version or theirs. Other issues merge automatically.
 - **More → Export CSV** exports everything, with the computed SLA columns, for Excel.
 
-## 4. How the rules work
+## 5. How the rules work
 
 **ITIL priority (impact × urgency)**
 
@@ -77,6 +94,6 @@ Each priority expects a level. A lower current level is flagged, meaning functio
 
 **Status lifecycle:** New → Assigned → In progress → (On hold) → Resolved – pending validation → Closed. **Needs status check** marks issues imported with an unknown status.
 
-## 5. Working without GitHub
+## 6. Working without GitHub
 
 Open `index.html` directly from a folder. It reads `issues.js` next to it. Changes stay in that browser until you click **Save data file** and replace `issues.js` yourself.
