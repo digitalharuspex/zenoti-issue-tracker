@@ -1,0 +1,1252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zenoti Issue Tracker</title>
+<style>
+:root {
+  --bg: #f4f5f7; --surface: #ffffff; --surface-2: #f0f2f5; --surface-3: #e7eaef;
+  --border: #d8dce3; --border-strong: #b9c0cb; --text: #18212d; --muted: #5b6676;
+  --accent: #2c56a5; --accent-soft: #e5ecf8; --on-accent: #ffffff;
+  --navy: #17365d; --on-navy: #ffffff;
+  --danger: #b42318; --danger-soft: #fdecea; --warn: #9a4a00; --warn-soft: #fff3d6; --ok: #08703f; --ok-soft: #e3f5ea;
+  --p1: #c00000; --p1-ink: #ffffff; --p2: #ed7d31; --p2-ink: #1d1206; --p3: #ffd966; --p3-ink: #2a2100;
+  --p4: #5b9bd5; --p4-ink: #07172a; --p5: #a5a5a5; --p5-ink: #161616;
+  --shadow: 0 10px 30px rgba(16, 24, 40, .18); --radius: 10px;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e131a; --surface: #151c26; --surface-2: #1b2430; --surface-3: #232e3c;
+    --border: #2b3645; --border-strong: #3d4a5c; --text: #e5e9ef; --muted: #9ba7b7;
+    --accent: #84a9ef; --accent-soft: #1d2a40; --on-accent: #0b1220; --navy: #10243f; --on-navy: #e8eef7;
+    --danger: #ff8a80; --danger-soft: #3a1714; --warn: #f5b454; --warn-soft: #3a2a0f; --ok: #6fd69b; --ok-soft: #12301f;
+    --shadow: 0 10px 30px rgba(0, 0, 0, .5); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e131a; --surface: #151c26; --surface-2: #1b2430; --surface-3: #232e3c;
+  --border: #2b3645; --border-strong: #3d4a5c; --text: #e5e9ef; --muted: #9ba7b7;
+  --accent: #84a9ef; --accent-soft: #1d2a40; --on-accent: #0b1220; --navy: #10243f; --on-navy: #e8eef7;
+  --danger: #ff8a80; --danger-soft: #3a1714; --warn: #f5b454; --warn-soft: #3a2a0f; --ok: #6fd69b; --ok-soft: #12301f;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .5); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--text); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: var(--accent); }
+.num { font-variant-numeric: tabular-nums; }
+.mono { font-family: var(--mono); font-size: 12.5px; }
+.muted { color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+[hidden] { display: none !important; }
+
+.topbar { background: var(--navy); color: var(--on-navy); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 20px; }
+.brand { display: flex; align-items: center; gap: 12px; margin-right: auto; min-width: 0; flex-wrap: wrap; }
+.brand h1 { font-size: 17px; margin: 0; font-weight: 650; }
+.sync { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 2px 10px; border-radius: 999px; background: rgba(255,255,255,.12); white-space: nowrap; }
+.sync i { width: 8px; height: 8px; border-radius: 50%; background: #9fb3c8; display: inline-block; }
+.sync[data-s="synced"] i { background: #5fd28f; }
+.sync[data-s="saving"] i, .sync[data-s="loading"] i { background: #f5d36a; }
+.sync[data-s="error"] i, .sync[data-s="conflict"] i { background: #ff8a80; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); border-radius: 8px; padding: 6px 12px; min-height: 34px; cursor: pointer; white-space: nowrap; }
+.btn:hover { background: var(--surface-2); }
+.btn:disabled { opacity: .55; cursor: default; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
+.topbar .btn { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.28); color: var(--on-navy); }
+.topbar .btn:hover { background: rgba(255,255,255,.18); }
+.topbar .btn.primary { background: #ffffff; color: #17365d; border-color: #ffffff; }
+.btn.danger { color: var(--danger); border-color: var(--danger); background: transparent; }
+.btn.small { min-height: 28px; padding: 3px 9px; font-size: 12.5px; }
+.btn.tiny { min-height: 24px; padding: 1px 7px; font-size: 11.5px; }
+.count-pill { background: #f5b454; color: #2a1800; border-radius: 999px; padding: 0 7px; font-size: 12px; font-weight: 700; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.menu { position: relative; }
+.menu > summary { list-style: none; }
+.menu > summary::-webkit-details-marker { display: none; }
+.menu-list { position: absolute; right: 0; top: calc(100% + 6px); z-index: 30; min-width: 240px; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow); padding: 6px; }
+.menu-list button { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 8px 10px; border-radius: 6px; cursor: pointer; }
+.menu-list button:hover { background: var(--surface-2); }
+.menu-list hr { border: 0; border-top: 1px solid var(--border); margin: 6px 0; }
+
+#banners { padding: 0 20px; }
+.banner { margin-top: 12px; padding: 10px 14px; border-radius: 10px; border: 1px solid; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.banner p { margin: 0; flex: 1 1 320px; }
+.banner.warn { background: var(--warn-soft); border-color: color-mix(in srgb, var(--warn) 40%, transparent); }
+.banner.info { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
+.banner.danger { background: var(--danger-soft); border-color: color-mix(in srgb, var(--danger) 40%, transparent); }
+
+.tabs { display: flex; gap: 4px; padding: 14px 20px 0; border-bottom: 1px solid var(--border); overflow-x: auto; }
+.tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 12px; cursor: pointer; color: var(--muted); font-weight: 600; white-space: nowrap; }
+.tab[aria-selected="true"] { color: var(--text); border-bottom-color: var(--accent); }
+main { padding: 16px 20px 40px; max-width: 1600px; margin: 0 auto; }
+
+.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.metric { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; text-align: left; cursor: pointer; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.metric:hover { border-color: var(--border-strong); }
+.metric[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.metric .v { font-size: 22px; font-weight: 650; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.metric .l { font-size: 12.5px; color: var(--muted); }
+.metric.alert .v { color: var(--danger); }
+.metric.caution .v { color: var(--warn); }
+.metric.static { cursor: default; }
+.metric.dist { grid-column: span 2; cursor: default; }
+.distbar { display: flex; height: 10px; border-radius: 99px; overflow: hidden; background: var(--surface-3); margin: 6px 0; }
+.distbar span { display: block; height: 100%; }
+.distlegend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12.5px; }
+.distlegend button { background: none; border: 0; padding: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; color: var(--text); }
+.distlegend i { width: 9px; height: 9px; border-radius: 3px; display: inline-block; }
+@media (max-width: 520px) { .metric.dist { grid-column: span 1; } }
+
+.filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+.filters input[type="search"] { flex: 1 1 240px; min-width: 0; }
+.filters select, .filters input, .field input, .field select, .field textarea, .inline-input, .set-table input, .set-table select {
+  background: var(--surface); border: 1px solid var(--border-strong); border-radius: 8px; padding: 6px 10px; min-height: 34px; min-width: 0;
+}
+.filters select { max-width: 100%; }
+.result-count { margin-left: auto; color: var(--muted); font-size: 12.5px; }
+
+.table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: auto; }
+@media (min-width: 861px) { #view-issues .table-wrap { max-height: calc(100vh - 150px); } }
+table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 13px; }
+thead th { position: sticky; top: 0; z-index: 2; background: var(--surface-2); text-align: left; font-weight: 650; border-bottom: 1px solid var(--border); padding: 0; white-space: nowrap; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .3px; }
+thead th button, thead th span.h { all: unset; display: block; padding: 9px 10px; cursor: pointer; }
+thead th span.h { cursor: default; }
+thead th[aria-sort] button::after { content: " ▾"; }
+thead th[aria-sort="ascending"] button::after { content: " ▴"; }
+tbody td { padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+#tbody tr { cursor: pointer; }
+#tbody tr:hover td { background: var(--surface-2); }
+tr.closed td { color: var(--muted); }
+td.title-cell { min-width: 250px; max-width: 400px; }
+.title-cell strong { display: block; font-weight: 600; }
+.title-cell .imp { color: var(--muted); font-size: 12.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+td.id-cell { white-space: nowrap; }
+td.tags-cell { min-width: 180px; }
+td.right, th.right { text-align: right; }
+.empty { padding: 40px 20px; text-align: center; color: var(--muted); }
+@media (max-width: 860px) { .hide-md { display: none; } }
+
+.pri { display: inline-block; border-radius: 999px; padding: 1px 9px; font-size: 12px; font-weight: 650; white-space: nowrap; }
+.pri-Prioritary { background: var(--p1); color: var(--p1-ink); }
+.pri-Urgent { background: var(--p2); color: var(--p2-ink); }
+.pri-Important { background: var(--p3); color: var(--p3-ink); }
+.pri-Relevant { background: var(--p4); color: var(--p4-ink); }
+.pri-Preferable { background: var(--p5); color: var(--p5-ink); }
+.pri-none { background: transparent; color: var(--warn); border: 1px dashed var(--warn); }
+.sub { display: block; margin-top: 4px; font-size: 11.5px; white-space: nowrap; }
+.sub.warn { color: var(--warn); }
+.sub.danger { color: var(--danger); }
+.tag { display: inline-block; border: 1px solid var(--border-strong); border-radius: 6px; padding: 0 6px; font-size: 11.5px; margin: 0 4px 4px 0; white-space: nowrap; background: var(--surface-2); }
+.clause { display: inline-block; font-family: var(--mono); font-size: 12px; margin-right: 5px; white-space: nowrap; }
+.clause.auto { color: var(--accent); text-decoration: underline dotted; }
+.st { display: inline-block; border-radius: 6px; padding: 1px 7px; font-size: 12px; white-space: nowrap; font-weight: 600; }
+.st-bad { background: var(--danger-soft); color: var(--danger); }
+.st-warn { background: var(--warn-soft); color: var(--warn); }
+.st-ok { background: var(--ok-soft); color: var(--ok); }
+.st-mute { background: var(--surface-3); color: var(--muted); }
+.lvl { font-family: var(--mono); font-size: 12px; font-weight: 700; }
+
+.scrim { position: fixed; inset: 0; background: rgba(10, 16, 24, .45); z-index: 40; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(780px, 100vw); z-index: 50; background: var(--bg); box-shadow: var(--shadow); display: flex; flex-direction: column; }
+.drawer-head { padding: 14px 20px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; gap: 12px; align-items: flex-start; }
+.drawer-head h2 { margin: 0; font-size: 16px; line-height: 1.3; }
+.drawer-head .meta { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+.drawer-head .x { margin-left: auto; }
+.drawer-body { overflow: auto; padding: 12px 20px 20px; flex: 1; }
+.drawer-foot { padding: 12px 20px; background: var(--surface); border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.drawer-foot .msg { flex: 1 1 0; min-width: 0; font-size: 12.5px; color: var(--danger); }
+fieldset { border: 1px solid var(--border); background: var(--surface); border-radius: var(--radius); padding: 12px 14px 14px; margin: 12px 0 0; min-width: 0; }
+legend { font-weight: 700; padding: 0 6px; font-size: 13px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+.wide { grid-column: 1 / -1; }
+@media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.field > label, .field > .lbl { font-size: 12.5px; font-weight: 600; }
+.field .req { color: var(--danger); }
+.field .hint { font-size: 11.5px; color: var(--muted); }
+.field textarea { min-height: 64px; resize: vertical; }
+.field.invalid input, .field.invalid select, .field.invalid textarea { border-color: var(--danger); box-shadow: 0 0 0 1px var(--danger); }
+.field .err { font-size: 11.5px; color: var(--danger); }
+.dt { display: flex; gap: 6px; }
+.dt input { flex: 1; }
+.tag-family { margin-bottom: 8px; }
+.tag-family .fam { font-size: 11.5px; color: var(--muted); margin-bottom: 3px; }
+.chip-btn { border: 1px solid var(--border-strong); background: var(--surface); border-radius: 999px; padding: 2px 10px; margin: 0 5px 5px 0; cursor: pointer; font-size: 12px; }
+.chip-btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip-btn.undef { border-style: dashed; }
+.companions { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.clause-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; }
+@media (max-width: 600px) { .clause-grid { grid-template-columns: 1fr; } }
+.clause-opt { display: flex; gap: 8px; align-items: flex-start; font-size: 12.5px; padding: 4px 6px; border-radius: 6px; }
+.clause-opt:hover { background: var(--surface-2); }
+.clause-opt input { margin-top: 3px; }
+.clause-opt .eff { display: block; color: var(--muted); font-size: 11.5px; }
+.clause-opt .autow { display: block; color: var(--accent); font-size: 11.5px; font-weight: 600; }
+.panel { margin-top: 12px; border-radius: 8px; padding: 10px 12px; background: var(--surface-2); display: grid; gap: 6px; }
+.panel .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.panel.warn { background: var(--warn-soft); }
+.sla-table { width: 100%; font-size: 12.5px; border-collapse: collapse; }
+.sla-table th, .sla-table td { text-align: left; padding: 5px 6px; border-bottom: 1px solid var(--border); }
+.sla-table th { font-weight: 650; color: var(--muted); font-size: 11.5px; text-transform: uppercase; }
+.matrix-mini { display: grid; grid-template-columns: auto repeat(3, 1fr); gap: 3px; font-size: 11.5px; margin-top: 6px; }
+.matrix-mini div { padding: 3px 6px; border-radius: 4px; text-align: center; }
+.matrix-mini .hd { color: var(--muted); background: transparent; }
+.matrix-mini .on { outline: 2px solid var(--text); outline-offset: -2px; }
+.log { list-style: none; margin: 10px 0 0; padding: 0; }
+.log li { border-top: 1px solid var(--border); padding: 7px 0; font-size: 13px; display: flex; gap: 10px; }
+.log .d { white-space: nowrap; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 112px; }
+.log .k { font-size: 11px; border-radius: 5px; padding: 0 6px; height: 18px; line-height: 18px; background: var(--surface-3); color: var(--muted); white-space: nowrap; }
+.log .k.note { background: var(--accent-soft); color: var(--accent); }
+.add-update { display: grid; grid-template-columns: 190px 1fr auto; gap: 8px; align-items: start; }
+.add-update label { font-size: 12px; display: flex; gap: 6px; align-items: center; grid-column: 1 / -1; }
+@media (max-width: 600px) { .add-update { grid-template-columns: 1fr; } }
+.source { font-size: 12px; color: var(--muted); margin-top: 10px; }
+
+.ref h2, .settings h2 { font-size: 15px; margin: 22px 0 8px; }
+.ref h2:first-child, .settings h2:first-child { margin-top: 4px; }
+.ref p, .settings p { max-width: 900px; margin: 6px 0; }
+.ref table { font-size: 12.5px; }
+.ref td { min-width: 100px; }
+.how { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
+.how div { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; }
+.how h3 { margin: 0 0 4px; font-size: 13.5px; }
+.how p { margin: 0; font-size: 13px; color: var(--muted); }
+.matrix { display: grid; grid-template-columns: minmax(110px, auto) repeat(3, minmax(90px, 1fr)); gap: 4px; max-width: 640px; }
+.matrix div { padding: 10px; border-radius: 8px; font-size: 12.5px; }
+.matrix .hd { font-weight: 650; color: var(--muted); }
+.matrix .cell { text-align: center; font-weight: 650; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 12px; }
+.card .grid { max-width: 760px; }
+.set-table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.set-table th, .set-table td { padding: 6px; border-bottom: 1px solid var(--border); text-align: left; }
+.set-table input { width: 84px; }
+.set-table th { font-size: 11.5px; color: var(--muted); text-transform: uppercase; }
+.steps { margin: 6px 0 0 18px; padding: 0; }
+.steps li { margin: 4px 0; }
+#toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 60; background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 10px; box-shadow: var(--shadow); max-width: calc(100vw - 32px); font-size: 13px; }
+@media (max-width: 600px) {
+  .topbar, #banners, .tabs, main { padding-left: 16px; padding-right: 16px; }
+  .drawer-head, .drawer-body, .drawer-foot { padding-left: 16px; padding-right: 16px; }
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <h1>Zenoti Issue Tracker</h1>
+    <span class="sync" id="syncPill" data-s="local"><i></i><span id="syncText">Loading…</span></span>
+  </div>
+  <div class="actions">
+    <button class="btn primary" id="btnNew" type="button">+ New issue</button>
+    <button class="btn" id="btnSave" type="button" hidden>Save data file <span class="count-pill" id="dirtyPill" hidden></span></button>
+    <details class="menu" id="moreMenu">
+      <summary class="btn" role="button">More ▾</summary>
+      <div class="menu-list">
+        <button type="button" id="btnReload">Reload from GitHub</button>
+        <button type="button" id="btnCsv">Export CSV (for Excel)</button>
+        <button type="button" id="btnDownload">Download data file (issues.js)</button>
+        <button type="button" id="btnImport">Import data file…</button>
+        <hr>
+        <button type="button" id="btnDiscard">Discard unsaved changes</button>
+      </div>
+    </details>
+    <input type="file" id="fileInput" accept=".js,.json,application/json,text/javascript" hidden>
+  </div>
+</header>
+<div id="banners" aria-live="polite"></div>
+<nav class="tabs" role="tablist" aria-label="Views">
+  <button class="tab" role="tab" id="tab-issues" aria-controls="view-issues" aria-selected="true" type="button">Issues</button>
+  <button class="tab" role="tab" id="tab-ref" aria-controls="view-ref" aria-selected="false" type="button">SLA &amp; rules</button>
+  <button class="tab" role="tab" id="tab-settings" aria-controls="view-settings" aria-selected="false" type="button">Settings</button>
+</nav>
+<main>
+  <section id="view-issues" role="tabpanel" aria-labelledby="tab-issues">
+    <div class="metrics" id="metrics"></div>
+    <div class="filters">
+      <label class="sr-only" for="fQ">Search</label>
+      <input type="search" id="fQ" placeholder="Search ID, title, impact, owner, tags…">
+      <label class="sr-only" for="fStatus">Status</label><select id="fStatus"></select>
+      <label class="sr-only" for="fPri">Priority</label><select id="fPri"></select>
+      <label class="sr-only" for="fFn">Function</label><select id="fFn"></select>
+      <label class="sr-only" for="fTag">Tag</label><select id="fTag"></select>
+      <label class="sr-only" for="fFlag">Flag</label><select id="fFlag"></select>
+      <button class="btn small" type="button" id="btnClear">Clear filters</button>
+      <span class="result-count" id="resultCount"></span>
+    </div>
+    <div class="table-wrap">
+      <table><thead id="thead"></thead><tbody id="tbody"></tbody></table>
+      <div class="empty" id="emptyState" hidden>No issues match these filters.</div>
+    </div>
+  </section>
+  <section id="view-ref" class="ref" role="tabpanel" aria-labelledby="tab-ref" hidden></section>
+  <section id="view-settings" class="settings" role="tabpanel" aria-labelledby="tab-settings" hidden></section>
+</main>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" hidden>
+  <div class="drawer-head">
+    <div><h2 id="drawerTitle"></h2><div class="meta" id="drawerMeta"></div></div>
+    <button class="btn small x" type="button" id="btnClose" aria-label="Close">Close</button>
+  </div>
+  <form class="drawer-body" id="form" novalidate></form>
+  <div class="drawer-foot">
+    <button class="btn primary" type="button" id="btnSaveIssue">Save issue</button>
+    <button class="btn" type="button" id="btnCancel">Cancel</button>
+    <span class="msg" id="formMsg"></span>
+    <button class="btn danger" type="button" id="btnDelete">Delete</button>
+  </div>
+</aside>
+<div id="toast" role="status" hidden></div>
+
+<script type="application/json" id="defaultConfig">{"priorities":[{"rank":1,"name":"Prioritary","definition":"Critical business continuity, material financial/security exposure, or imminent hard deadline.","entry":"System/payment outage; active security/fraud; material revenue impact; legal/compliance exposure; deadline <=3 days.","ack":"<=1 business hour","plan":"<=4 business hours","cadence":"Every 2 hours","owner":"Zenoti Support Lead + Product/Engineering leadership","color":"#C00000","itil":"P1","itilName":"Critical","level":"N3","sla":{"clock":"business","ackH":1,"planH":4,"updateH":2,"resolveH":9}},{"rank":2,"name":"Urgent","definition":"Severe degradation requiring accelerated resolution.","entry":"Major financial impact; multi-location disruption; deadline 4-7 days; high-volume member impact.","ack":"<=4 business hours","plan":"<=1 business day","cadence":"Daily","owner":"Support Manager + Product owner","color":"#ED7D31","itil":"P2","itilName":"High","level":"N2","sla":{"clock":"business","ackH":4,"planH":9,"updateH":9,"resolveH":27}},{"rank":3,"name":"Important","definition":"Meaningful operational impact with workaround or contained scope.","entry":"Repeated defect; one/more locations affected; recurring manual work; no response >24h.","ack":"<=1 business day","plan":"<=2 business days","cadence":"Every 2 business days","owner":"Assigned agent + Support Manager","color":"#FFD966","itil":"P3","itilName":"Medium","level":"N2","sla":{"clock":"business","ackH":9,"planH":18,"updateH":18,"resolveH":90}},{"rank":4,"name":"Relevant","definition":"Limited impact, correction, report defect, or inquiry needing planned follow-up.","entry":"Low-volume issue; non-blocking report/data defect; inquiry; contained correction.","ack":"<=2 business days","plan":"<=5 business days","cadence":"Weekly","owner":"Assigned agent","color":"#5B9BD5","itil":"P4","itilName":"Low","level":"N1","sla":{"clock":"business","ackH":18,"planH":45,"updateH":45,"resolveH":180}},{"rank":5,"name":"Preferable","definition":"Enhancement or optimization without current service impact.","entry":"Feature request; convenience improvement; cosmetic change; no deadline.","ack":"<=3 business days","plan":"Backlog / roadmap decision","cadence":"Biweekly or milestone","owner":"Customer Success / Product","color":"#A5A5A5","itil":"P5","itilName":"Planning","level":"N1","sla":{"clock":"business","ackH":27,"planH":null,"updateH":90,"resolveH":null}}],"statuses":[{"name":"New","category":"new","pausesSla":false,"description":"Logged and reported to Zenoti; not yet acknowledged."},{"name":"Needs status check","category":"new","pausesSla":false,"description":"Imported with an unknown status; confirm with Zenoti and update."},{"name":"Assigned","category":"active","pausesSla":false,"description":"Zenoti acknowledged the issue and named an owner."},{"name":"In progress","category":"active","pausesSla":false,"description":"Zenoti is working on a fix or workaround."},{"name":"On hold – waiting on FPT","category":"hold","pausesSla":true,"description":"Zenoti needs information or validation from FPT. The SLA clock is paused."},{"name":"On hold – waiting on third party","category":"hold","pausesSla":false,"description":"Waiting on Fiserv, Listen360 or another vendor. The SLA clock keeps running unless your contract says otherwise."},{"name":"Resolved – pending validation","category":"resolved","pausesSla":false,"description":"Fix or workaround delivered; FPT is validating before closure."},{"name":"Closed","category":"closed","pausesSla":false,"description":"Validated: outcome confirmed, data and money reconciled, RCA documented."},{"name":"Cancelled","category":"closed","pausesSla":false,"description":"Withdrawn, duplicate or not a Zenoti issue."}],"requestTypes":["INCIDENT","CORRECTION","INQUIRY","ENHANCEMENT"],"functions":["BILLING","MEMBERSHIP","REPORTING","INTEGRATION","NEW-LOCATION"],"tags":[{"family":"Request type","tag":"INCIDENT","use":"Service is broken/degraded","defaultPriority":"Impact-based","companions":"Functional + impact tags","example":"Collection processing fails","owner":"Support/Engineering"},{"family":"Request type","tag":"CORRECTION","use":"Configuration/data must be corrected","defaultPriority":"Important","companions":"Functional tag","example":"Incorrect membership setup","owner":"Support/Implementation"},{"family":"Request type","tag":"INQUIRY","use":"Question or clarification only","defaultPriority":"Relevant","companions":"Functional tag","example":"How a report works","owner":"Support/CS"},{"family":"Request type","tag":"ENHANCEMENT","use":"New behavior/capability requested","defaultPriority":"Preferable","companions":"Functional tag","example":"New report field","owner":"Product"},{"family":"Function","tag":"BILLING","use":"Charges, collections, fees, refunds, payments","defaultPriority":"Important","companions":"FINANCIAL if monetary impact","example":"Duplicate charge","owner":"Payments/Product"},{"family":"Function","tag":"MEMBERSHIP","use":"Membership state, type, duplication, automation","defaultPriority":"Important","companions":"DATA-INTEGRITY if records affected","example":"Duplicate membership","owner":"Product"},{"family":"Function","tag":"REPORTING","use":"Reports, exports, missing fields/data","defaultPriority":"Relevant","companions":"OPS or FINANCIAL if consequential","example":"BDD export failure","owner":"Reporting/Product"},{"family":"Function","tag":"INTEGRATION","use":"Fiserv, Listen360 or third-party dependency","defaultPriority":"Important","companions":"Vendor/system tag","example":"Fiserv migration issue","owner":"Integration owner"},{"family":"Function","tag":"NEW-LOCATION","use":"Opening, configuration or launch dependency","defaultPriority":"Important","companions":"DEADLINE + T-7/T-3","example":"Location setup blocked","owner":"Implementation"},{"family":"Risk","tag":"FINANCIAL","use":"Revenue loss, refund, incorrect collection","defaultPriority":"Urgent","companions":"BILLING usually","example":"MXN 1M/day impact","owner":"Payments leadership"},{"family":"Risk","tag":"SECURITY","use":"Security exposure or suspected compromise","defaultPriority":"Prioritary","companions":"FRAUD if applicable","example":"Carding attack","owner":"Security"},{"family":"Risk","tag":"DATA-INTEGRITY","use":"Missing, duplicate or inconsistent data","defaultPriority":"Urgent","companions":"Functional tag","example":"Missing COF","owner":"Engineering/Product"},{"family":"Impact","tag":"OPS","use":"Operational process materially affected","defaultPriority":"Important","companions":"MULTI-LOCATION if broad","example":"Manual workflow blocked","owner":"Operations/Product"},{"family":"Impact","tag":"MEMBER-IMPACT","use":"Members charged/blocked/misinformed","defaultPriority":"Urgent","companions":"Functional tag","example":"Members not suspended","owner":"Support/Product"},{"family":"Scope","tag":"MULTI-LOCATION","use":"More than one club/location affected","defaultPriority":"Urgent","companions":"OPS","example":"Collections disrupted broadly","owner":"Support Manager"},{"family":"Behavior","tag":"RECURRING","use":"Repeated instability or repeat occurrence","defaultPriority":"Urgent","companions":"INCIDENT","example":"Bulk charge instability","owner":"Engineering"},{"family":"Behavior","tag":"REGRESSION","use":"Previously fixed behavior returned","defaultPriority":"Urgent","companions":"INCIDENT","example":"Defect reappears","owner":"Engineering"},{"family":"SLA","tag":"NO-RESPONSE","use":"No substantive response >24 business hours","defaultPriority":"Increase 1","companions":"SLA-BREACH","example":"Agent silent >24h","owner":"Support Manager"},{"family":"SLA","tag":"STALE","use":"No meaningful progress for 5 business days","defaultPriority":"Increase 1","companions":"AGEING","example":"Unresolved export defect","owner":"CS/Product"},{"family":"Deadline","tag":"T-7","use":"Deadline 4-7 calendar days away","defaultPriority":"Urgent","companions":"DEADLINE","example":"Go-live in 6 days","owner":"Manager/Product"},{"family":"Deadline","tag":"T-3","use":"Deadline <=3 calendar days away","defaultPriority":"Prioritary","companions":"DEADLINE","example":"Go-live in 2 days","owner":"Leadership"},{"family":"Not in Tagging Matrix","tag":"OUTAGE","use":"Referenced by Escalation Rules but has no Tagging Matrix row yet","defaultPriority":"","companions":"","example":"","owner":""},{"family":"Not in Tagging Matrix","tag":"FRAUD","use":"Referenced by Escalation Rules but has no Tagging Matrix row yet","defaultPriority":"","companions":"","example":"","owner":""},{"family":"Not in Tagging Matrix","tag":"SLA-BREACH","use":"Referenced by Escalation Rules but has no Tagging Matrix row yet","defaultPriority":"","companions":"","example":"","owner":""},{"family":"Not in Tagging Matrix","tag":"NO-PLAN","use":"Referenced by Escalation Rules but has no Tagging Matrix row yet","defaultPriority":"","companions":"","example":"","owner":""},{"family":"Not in Tagging Matrix","tag":"DEADLINE","use":"Referenced by Escalation Rules but has no Tagging Matrix row yet","defaultPriority":"","companions":"","example":"","owner":""},{"family":"Not in Tagging Matrix","tag":"LAUNCH","use":"Referenced by Escalation Rules but has no Tagging Matrix row yet","defaultPriority":"","companions":"","example":"","owner":""},{"family":"Not in Tagging Matrix","tag":"NO-WORKAROUND","use":"Referenced by Escalation Rules but has no Tagging Matrix row yet","defaultPriority":"","companions":"","example":"","owner":""},{"family":"Not in Tagging Matrix","tag":"EXEC-VISIBILITY","use":"Referenced by Escalation Rules but has no Tagging Matrix row yet","defaultPriority":"","companions":"","example":"","owner":""},{"family":"Not in Tagging Matrix","tag":"AGEING","use":"Referenced by Escalation Rules but has no Tagging Matrix row yet","defaultPriority":"","companions":"","example":"","owner":""}],"clauses":[{"id":"E01","trigger":"Active outage / unusable core flow","condition":"Payments, check-in, selling, member access or collections unavailable","effect":"Set Prioritary","tags":"OUTAGE; OPS","escalateTo":"Support Lead; Engineering on-call","channel":"Ticket + Teams/email leadership thread","evidence":"Screenshots, timestamps, locations, error IDs","clock":"Immediate","notes":"No waiting for normal SLA","logic":{"kind":"set","level":"Prioritary"}},{"id":"E02","trigger":"Active fraud or security event","condition":"Carding, suspected breach, credential abuse, ongoing fraudulent attempts","effect":"Set Prioritary","tags":"SECURITY; FRAUD; BILLING","escalateTo":"Security; Payments; Zenoti leadership","channel":"Security incident channel + ticket","evidence":"Attempt counts, timestamps, IP/device/payment evidence","clock":"Immediate","notes":"Containment and evidence preservation first","logic":{"kind":"set","level":"Prioritary"}},{"id":"E03","trigger":"Material financial impact","condition":"Confirmed or credible revenue loss/refund exposure","effect":"Increase one level; set Prioritary if material and ongoing","tags":"FINANCIAL; BILLING","escalateTo":"Support Manager; Payments/Product leadership","channel":"Ticket + executive escalation","evidence":"MXN estimate, transactions, affected period","clock":"Within 1 hour","notes":"Document estimation method","logic":{"kind":"up"}},{"id":"E04","trigger":"Operational impact","condition":"Multiple locations or critical workflow materially degraded","effect":"Increase one level, maximum Urgent unless outage","tags":"OPS; MULTI-LOCATION","escalateTo":"Support Manager; Product owner","channel":"Ticket + operations thread","evidence":"Affected locations/users/processes","clock":"Within 4 hours","notes":"Use E01 if fully unavailable","logic":{"kind":"up","max":"Urgent"}},{"id":"E05","trigger":"No agent response","condition":"No substantive response for >24 business hours","effect":"Increase one level","tags":"SLA-BREACH; NO-RESPONSE","escalateTo":"Support Manager","channel":"Reply on ticket + email escalation","evidence":"Last response timestamp and ticket ID","clock":"At 24h","notes":"Auto-escalate again at 48h","logic":{"kind":"up","auto":"agentResponse","hours":24}},{"id":"E06","trigger":"No action plan","condition":"No owner/ETA/action plan within target for current level","effect":"Increase one level","tags":"SLA-BREACH; NO-PLAN","escalateTo":"Support Manager; CS Lead","channel":"Ticket + governance tracker","evidence":"Chronology and prior requests","clock":"At SLA breach","notes":"Substantive plan required","logic":{"kind":"up","auto":"planBreach"}},{"id":"E07","trigger":"Deadline approaching","condition":"Business deadline is 4-7 calendar days away","effect":"Set at least Urgent","tags":"DEADLINE; T-7","escalateTo":"Product owner; Support Manager","channel":"Ticket + project thread","evidence":"Deadline, dependency, consequence","clock":"At T-7","notes":"Reassess daily","logic":{"kind":"atLeast","level":"Urgent","auto":"deadline7"}},{"id":"E08","trigger":"Deadline imminent","condition":"Business deadline is <=3 calendar days away","effect":"Set Prioritary","tags":"DEADLINE; T-3","escalateTo":"Zenoti leadership; Product/Engineering","channel":"Leadership escalation","evidence":"Deadline, launch plan, blocker","clock":"At T-3","notes":"Daily leadership checkpoint","logic":{"kind":"set","level":"Prioritary","auto":"deadline3"}},{"id":"E09","trigger":"Recurring/regression","condition":"Same defect recurs after fix or >=3 times in 30 days","effect":"Increase one level","tags":"RECURRING; REGRESSION","escalateTo":"Product/Engineering owner","channel":"Problem record + linked tickets","evidence":"Ticket history and reproduction","clock":"On confirmation","notes":"Request RCA and permanent fix","logic":{"kind":"up"}},{"id":"E10","trigger":"Data integrity","condition":"Duplicate, missing, altered or inconsistent financial/member data","effect":"Set at least Urgent; Prioritary if broad/ongoing","tags":"DATA-INTEGRITY","escalateTo":"Engineering; Product; Payments as applicable","channel":"Ticket + incident thread","evidence":"Samples, counts, before/after evidence","clock":"Within 4 hours","notes":"Avoid destructive corrections before backup","logic":{"kind":"atLeast","level":"Urgent"}},{"id":"E11","trigger":"Member/customer harm","condition":"Incorrect charges, access decisions or broad member-facing impact","effect":"Increase one level","tags":"MEMBER-IMPACT; BILLING if applicable","escalateTo":"Support Manager; Product owner","channel":"Ticket + customer impact log","evidence":"Affected members, values, remediation","clock":"Within 4 hours","notes":"Track refunds/communications","logic":{"kind":"up"}},{"id":"E12","trigger":"New-location blocker","condition":"Launch/opening/configuration dependency blocks new location","effect":"Set at least Important; Urgent at T-7; Prioritary at T-3","tags":"NEW-LOCATION; LAUNCH","escalateTo":"Implementation; Support Manager","channel":"Launch tracker + ticket","evidence":"Location, go-live date, dependency","clock":"Same day","notes":"Deadline rules override","logic":{"kind":"atLeast","level":"Important"}},{"id":"E13","trigger":"Workaround unavailable","condition":"No safe practical workaround exists","effect":"Increase one level","tags":"NO-WORKAROUND","escalateTo":"Support Manager; Product owner","channel":"Ticket escalation","evidence":"Attempted mitigations and results","clock":"Same day","notes":"State operational consequence","logic":{"kind":"up","auto":"noWorkaround"}},{"id":"E14","trigger":"Executive/customer commitment","condition":"Miss risks formal commitment or executive visibility","effect":"Increase one level, capped by actual impact","tags":"EXEC-VISIBILITY","escalateTo":"CS Lead; Support Manager","channel":"Governance thread","evidence":"Commitment/date/stakeholder","clock":"Same day","notes":"Does not replace impact evidence","logic":{"kind":"up"}},{"id":"E15","trigger":"Stale unresolved issue","condition":"No meaningful progress for 5 business days","effect":"Increase one level","tags":"STALE; AGEING","escalateTo":"CS Lead; Product owner","channel":"Weekly governance escalation","evidence":"Timeline and blockers","clock":"At day 5","notes":"Repeat every 5 business days","logic":{"kind":"up","auto":"stale","days":5}}],"stages":[{"stage":"1. Intake","when":"A new issue, defect, inquiry or enhancement is reported","action":"Capture scope, locations, member impact, financial impact, workaround, deadline and evidence","owner":"FPT issue owner","output":"Complete intake record","timing":"Same business day","test":"Check E01-E14 immediately","evidence":"Ticket ID, screenshots, timestamps, affected samples"},{"stage":"2. Classify","when":"Intake has minimum required facts","action":"Apply request type, function, risk, impact, scope, behavior and deadline tags","owner":"FPT issue owner","output":"Standard tag set","timing":"At intake","test":"Missing facts remain an explicit action","evidence":"Tagging Matrix"},{"stage":"3. Prioritize","when":"Impact and scope are understood","action":"Assign base priority, then apply the highest escalation override","owner":"FPT owner + Zenoti agent","output":"Final priority","timing":"At intake and every change","test":"Any clause can raise priority; never lower without evidence","evidence":"Priority rationale and clause IDs"},{"stage":"4. Assign commitments","when":"Final priority is set","action":"Record Zenoti owner, next action, target date and update cadence","owner":"Zenoti agent / manager","output":"Named owner and dated action plan","timing":"Per priority target","test":"No owner or plan triggers E06","evidence":"Written action plan"},{"stage":"5. Monitor","when":"Issue remains open","action":"Update status, last substantive update, blockers, loss and next milestone","owner":"FPT owner","output":"Current working record","timing":"Per priority cadence","test":"No response >24h triggers E05; stale >5 business days triggers E15","evidence":"Chronology and latest evidence"},{"stage":"6. Escalate","when":"Clause threshold is met","action":"Raise priority, add clause/tag, notify required leadership and request decision","owner":"FPT software administration","output":"Escalation record","timing":"At threshold","test":"T-7, T-3, financial, security, outage and data integrity checks","evidence":"Email/Teams thread linked to ticket"},{"stage":"7. Close","when":"Fix is deployed and verified","action":"Validate outcome, reconcile data/money, document RCA/prevention, confirm no recurrence","owner":"FPT owner + Zenoti owner","output":"Closure package","timing":"Before closing","test":"Do not close on workaround alone unless explicitly accepted","evidence":"Validation evidence, RCA and prevention owner"},{"stage":"8. Review","when":"Weekly governance session","action":"Review all Prioritary/Urgent items, stale items, deadlines and recurring themes","owner":"FPT + Zenoti governance team","output":"Decisions and action log","timing":"Weekly","test":"Open actions roll forward with owner/date","evidence":"Governance minutes"}],"itil":{"impact":[{"level":"High","label":"High: widespread","description":"Several clubs or all members; a core flow (payments, collections, check-in, selling, member access) is unavailable; or material financial, security or compliance exposure."},{"level":"Medium","label":"Medium: significant","description":"One club fully or several partially; a defined group of members; moderate financial impact."},{"level":"Low","label":"Low: limited","description":"A single user or a few records; contained scope; no measurable financial impact."}],"urgency":[{"level":"High","label":"High: act now","description":"Work cannot continue, loss grows quickly, fraud is active, or the business deadline is 3 days away or less."},{"level":"Medium","label":"Medium: soon","description":"Work is degraded or the workaround is costly; loss grows over time; deadline 4 to 7 days away."},{"level":"Low","label":"Low: can be planned","description":"An acceptable workaround exists; no deadline; cosmetic or convenience."}],"matrix":{"High|High":"Prioritary","High|Medium":"Urgent","High|Low":"Important","Medium|High":"Urgent","Medium|Medium":"Important","Medium|Low":"Relevant","Low|High":"Important","Low|Medium":"Relevant","Low|Low":"Preferable"}},"levels":[{"id":"N1","name":"N1 · Zenoti support agent","description":"First line: ticket owner, standard troubleshooting, configuration questions."},{"id":"N2","name":"N2 · Zenoti Support Manager / specialist","description":"Second line: specialist teams (payments, integrations, reporting) and support management."},{"id":"N3","name":"N3 · Zenoti Product / Engineering","description":"Third line: code fixes, data corrections, root-cause analysis."}],"requestTypeItil":{"INCIDENT":"Incident","CORRECTION":"Service request (correction)","INQUIRY":"Service request (information)","ENHANCEMENT":"Change request"},"calendar":{"timezoneNote":"Times use the viewer's computer clock (America/Mexico_City).","start":"09:00","end":"18:00","days":[1,2,3,4,5],"holidays":[{"date":"2026-01-01","name":"Año Nuevo"},{"date":"2026-02-02","name":"Día de la Constitución"},{"date":"2026-03-16","name":"Natalicio de Benito Juárez"},{"date":"2026-05-01","name":"Día del Trabajo"},{"date":"2026-09-16","name":"Día de la Independencia"},{"date":"2026-11-16","name":"Día de la Revolución"},{"date":"2026-12-25","name":"Navidad"},{"date":"2027-01-01","name":"Año Nuevo"},{"date":"2027-02-01","name":"Día de la Constitución"},{"date":"2027-03-15","name":"Natalicio de Benito Juárez"},{"date":"2027-05-01","name":"Día del Trabajo"},{"date":"2027-09-16","name":"Día de la Independencia"},{"date":"2027-11-15","name":"Día de la Revolución"},{"date":"2027-12-25","name":"Navidad"}]}}</script>
+<script src="issues.js"></script>
+<script>
+(function () {
+  'use strict';
+  const K = { pending: 'zenoti-tracker:pending:v2', gh: 'zenoti-tracker:github', prefs: 'zenoti-tracker:prefs:v2', local: 'zenoti-tracker:local:v2', v1: 'zenoti-issue-tracker:v1' };
+  const $ = (id) => document.getElementById(id);
+  let storageOk = true;
+  const readJSON = (k) => { try { const s = localStorage.getItem(k); return s ? JSON.parse(s) : null; } catch (e) { storageOk = false; return null; } };
+  const writeJSON = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { storageOk = false; return false; } };
+  const removeKey = (k) => { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } };
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const clone = (o) => JSON.parse(JSON.stringify(o));
+  const pad = (n) => (n < 10 ? '0' : '') + n;
+  const ymd = (d) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  const nowDT = () => { const d = new Date(); return ymd(d) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes()); };
+  const todayStr = () => ymd(new Date());
+  function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => { t.hidden = true; }, 4500); }
+
+  /* ---------------- config & data ---------------- */
+  const DEFAULT_CONFIG = JSON.parse($('defaultConfig').textContent);
+  const state = {
+    data: null, base: null, remote: null, pending: [], mode: 'local', sync: 'loading', syncError: '', conflict: null,
+    localNotice: null, gh: null, filters: { q: '', status: 'open', pri: '', fn: '', tag: '', flag: '' },
+    sort: { key: 'priority', dir: 1 }, view: 'issues', lastCommit: null
+  };
+  const cfg = () => state.data.config;
+  function blankIssue() {
+    return { id: '', title: '', period: '', detectedDate: '', status: 'New', requestType: '', function: '', tags: [], impactSummary: '',
+      financialImpact: null, financialPeriod: 'per day', locations: '', membersAffected: '', workaround: '', basePriority: '', overridePriority: '',
+      impact: '', urgency: '', clauses: [], deadline: '', reportedAt: '', acknowledgedAt: '', planAt: '', resolvedAt: '', closedAt: '',
+      holdSince: '', holdPeriods: [], lastUpdate: '', lastAgentResponse: '', recommendedAction: '', reporter: '', zenotiTicket: '',
+      zenotiOwner: '', attentionLevel: '', nextAction: '', nextActionDue: '', nextReview: '', closureCriteria: '', rcaRequired: '',
+      preventionOwner: '', evidence: '', closureNotes: '', linkedRecords: '', source: '', log: [], createdAt: todayStr(), updatedAt: todayStr(), rev: '' };
+  }
+  function normalize(d) {
+    d = clone(d || {});
+    d.meta = d.meta || {};
+    const c = d.config && d.config.itil ? d.config : clone(DEFAULT_CONFIG);
+    if (c.statuses && typeof c.statuses[0] === 'string') c.statuses = clone(DEFAULT_CONFIG.statuses);
+    ['itil', 'levels', 'calendar', 'requestTypeItil'].forEach((k) => { if (!c[k]) c[k] = clone(DEFAULT_CONFIG[k]); });
+    d.config = c;
+    d.issues = (d.issues || []).map((it) => {
+      const b = blankIssue(); Object.keys(it).forEach((k) => { b[k] = it[k]; });
+      ['tags', 'clauses'].forEach((k) => { if (!Array.isArray(b[k])) b[k] = String(b[k] || '').split(';').map((x) => x.trim()).filter(Boolean); });
+      if (!Array.isArray(b.log)) b.log = [];
+      if (!Array.isArray(b.holdPeriods)) b.holdPeriods = [];
+      return b;
+    });
+    return d;
+  }
+  const emptyData = () => normalize({ meta: { name: 'Zenoti Issue Tracker', schema: 2, exportedAt: '' }, config: clone(DEFAULT_CONFIG), issues: [] });
+
+  /* ---------------- ops (each save is one op; ops re-apply on top of the latest file) ---------------- */
+  function applyOp(data, op) {
+    const d = clone(data);
+    if (op.kind === 'upsert') {
+      const key = op.prevId || op.issue.id;
+      let i = d.issues.findIndex((x) => x.id === key);
+      if (i < 0 && op.prevId) i = d.issues.findIndex((x) => x.id === op.issue.id);
+      if (i >= 0) d.issues[i] = clone(op.issue); else d.issues.push(clone(op.issue));
+    } else if (op.kind === 'delete') {
+      d.issues = d.issues.filter((x) => x.id !== op.id);
+    } else if (op.kind === 'config') {
+      d.config = clone(op.config);
+    } else if (op.kind === 'replace') {
+      return normalize(op.data);
+    }
+    return d;
+  }
+  const applyAll = (data, ops) => ops.reduce((acc, op) => applyOp(acc, op), data);
+  function recompute() { state.data = normalize(applyAll(state.remote ? state.remote.data : state.base, state.pending)); }
+  function savePending() { writeJSON(K.pending, state.pending); }
+
+  /* ---------------- time & business calendar ---------------- */
+  function parseDT(s) {
+    if (!s) return null;
+    const m = /^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/.exec(s);
+    if (!m) return null;
+    if (m[4] == null) { const st = (cfg().calendar.start || '09:00').split(':'); return new Date(+m[1], +m[2] - 1, +m[3], +st[0], +st[1]); }
+    return new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]);
+  }
+  const parseD = (s) => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s || ''); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null; };
+  const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+  const calUntil = (s) => { const d = parseD(s); return d ? Math.round((d - startOfToday()) / 864e5) : null; };
+  function calInfo() {
+    const c = cfg().calendar;
+    const [sh, sm] = (c.start || '09:00').split(':').map(Number), [eh, em] = (c.end || '18:00').split(':').map(Number);
+    const hol = {}; (c.holidays || []).forEach((h) => { hol[h.date] = h.name || 'Holiday'; });
+    return { sh, sm, eh, em, days: c.days || [1, 2, 3, 4, 5], hol, hpd: Math.max(0.5, (eh * 60 + em - sh * 60 - sm) / 60) };
+  }
+  const isBizDay = (d, ci) => ci.days.indexOf(d.getDay()) >= 0 && !ci.hol[ymd(d)];
+  function bizHours(a, b) {
+    if (!a || !b || b <= a) return 0;
+    const ci = calInfo(); let ms = 0;
+    const day = new Date(a.getFullYear(), a.getMonth(), a.getDate());
+    for (let guard = 0; day <= b && guard < 4000; guard++) {
+      if (isBizDay(day, ci)) {
+        const ds = new Date(day.getFullYear(), day.getMonth(), day.getDate(), ci.sh, ci.sm);
+        const de = new Date(day.getFullYear(), day.getMonth(), day.getDate(), ci.eh, ci.em);
+        const s = Math.max(ds, a), e = Math.min(de, b);
+        if (e > s) ms += e - s;
+      }
+      day.setDate(day.getDate() + 1);
+    }
+    return ms / 36e5;
+  }
+  function addBizHours(a, h) {
+    const ci = calInfo(); let rem = h * 36e5; let cur = new Date(a);
+    for (let guard = 0; guard < 4000; guard++) {
+      const ds = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate(), ci.sh, ci.sm);
+      const de = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate(), ci.eh, ci.em);
+      if (isBizDay(cur, ci)) {
+        if (cur < ds) cur = ds;
+        if (cur < de) { const avail = de - cur; if (rem <= avail) return new Date(cur.getTime() + rem); rem -= avail; }
+      }
+      cur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() + 1, 0, 0);
+    }
+    return cur;
+  }
+  const hoursBetween = (a, b, clock) => clock === '24x7' ? Math.max(0, (b - a) / 36e5) : bizHours(a, b);
+  const addHours = (a, h, clock) => clock === '24x7' ? new Date(a.getTime() + h * 36e5) : addBizHours(a, h);
+  function fmtDur(h, clock) {
+    if (h == null || h === '') return 'n/a';
+    const per = clock === '24x7' ? 24 : calInfo().hpd, uh = clock === '24x7' ? 'h' : 'bh', ud = clock === '24x7' ? 'd' : 'bd';
+    const a = Math.abs(h);
+    if (a < 1) return Math.round(a * 60) + ' min';
+    if (a < per) return (Math.round(a * 10) / 10) + ' ' + uh;
+    return (Math.round(a / per * 10) / 10) + ' ' + ud;
+  }
+  function fmtTarget(h, clock) {
+    if (h == null || h === '') return 'n/a';
+    const per = clock === '24x7' ? 24 : calInfo().hpd;
+    if (h >= per && Math.abs(h / per - Math.round(h / per)) < 1e-9) return Math.round(h / per) + (clock === '24x7' ? ' d' : ' bd');
+    return h + (clock === '24x7' ? ' h' : ' bh');
+  }
+  function fmtDT(s) {
+    const d = typeof s === 'string' ? parseDT(s) : s; if (!d || isNaN(d)) return '';
+    const hasTime = typeof s !== 'string' || /T\d{2}:\d{2}/.test(s);
+    return d.toLocaleString(undefined, hasTime ? { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' } : { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+  const fmtDate = (s) => { const d = parseD(s); return d ? d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : ''; };
+  const fmtMXN = (n) => (n == null || n === '' ? '' : Number(n).toLocaleString('es-MX', { maximumFractionDigits: 0 }));
+
+  /* ---------------- rules ---------------- */
+  const priNames = () => cfg().priorities.map((p) => p.name);
+  const rank = (n) => { const i = priNames().indexOf(n); return i < 0 ? null : i; };
+  const priObj = (n) => cfg().priorities.find((p) => p.name === n) || null;
+  const higher = (a, b) => { const ra = rank(a), rb = rank(b); if (ra == null) return rb == null ? '' : b; if (rb == null) return a; return ra <= rb ? a : b; };
+  const clauseById = (id) => cfg().clauses.find((c) => c.id === id) || null;
+  const statusObj = (n) => cfg().statuses.find((s) => s.name === n) || { name: n, category: 'active', pausesSla: false };
+  const cat = (it) => statusObj(it.status).category;
+  const isClosed = (it) => cat(it) === 'closed';
+  const isResolved = (it) => cat(it) === 'resolved' || cat(it) === 'closed';
+  const pausedNow = (it) => !!statusObj(it.status).pausesSla;
+  const matrixPri = (it) => (it.impact && it.urgency ? cfg().itil.matrix[it.impact + '|' + it.urgency] || '' : '');
+  const basePri = (it) => matrixPri(it) || it.basePriority || '';
+  function applyClause(base, logic) {
+    const r = rank(base); if (r == null || !logic) return base;
+    if (logic.kind === 'set' || logic.kind === 'atLeast') return higher(base, logic.level);
+    if (logic.kind === 'up') { let nr = Math.max(0, r - 1); if (logic.max) { const m = rank(logic.max); nr = Math.min(r, Math.max(nr, m)); } return priNames()[nr]; }
+    return base;
+  }
+  function holdHours(it, start, end, clock) {
+    let h = 0;
+    const periods = (it.holdPeriods || []).slice();
+    if (it.holdSince && pausedNow(it)) periods.push({ from: it.holdSince, to: '' });
+    periods.forEach((p) => {
+      const f = parseDT(p.from), t = p.to ? parseDT(p.to) : new Date(); if (!f) return;
+      const s = new Date(Math.max(f, start)), e = new Date(Math.min(t, end));
+      if (e > s) h += hoursBetween(s, e, clock);
+    });
+    return h;
+  }
+  function slaEval(it, final) {
+    const p = priObj(final); if (!p || !p.sla) return { items: [], worst: null, clock: 'business' };
+    const clock = p.sla.clock || 'business', start = parseDT(it.reportedAt), now = new Date(), paused = pausedNow(it);
+    const defs = [['ack', 'Response', p.sla.ackH, it.acknowledgedAt], ['plan', 'Action plan', p.sla.planH, it.planAt], ['resolve', 'Resolution', p.sla.resolveH, it.resolvedAt]];
+    const items = defs.map(([k, label, target, doneS]) => {
+      if (target == null || target === '') return { k, label, state: 'na' };
+      if (!start) return { k, label, target, state: 'nostart' };
+      const done = parseDT(doneS), end = done || now;
+      const held = holdHours(it, start, end, clock);
+      const used = Math.max(0, hoursBetween(start, end, clock) - held);
+      const due = addHours(start, target + held, clock);
+      let st;
+      if (done) st = used <= target ? 'met' : 'missed';
+      else if (used > target) st = 'breached';
+      else if (paused) st = 'paused';
+      else if (isClosed(it)) st = 'na';
+      else if (used >= 0.75 * target) st = 'risk';
+      else st = 'ok';
+      return { k, label, target, used, due, done, state: st, left: target - used };
+    });
+    const order = ['breached', 'risk', 'missed', 'paused', 'ok', 'met', 'nostart', 'na'];
+    const live = items.filter((x) => x.state !== 'na');
+    const worst = live.length ? live.slice().sort((a, b) => order.indexOf(a.state) - order.indexOf(b.state))[0] : null;
+    return { items, worst, clock };
+  }
+  function autoClauses(it, sla) {
+    const out = []; if (isResolved(it)) return out;
+    const L = (id) => (clauseById(id) || {}).logic || {};
+    const hpd = calInfo().hpd, now = new Date();
+    if (!pausedNow(it)) {
+      const ref = parseDT(it.lastAgentResponse || it.acknowledgedAt || it.reportedAt);
+      const lim = L('E05').hours || 24;
+      if (ref && L('E05').auto) { const h = bizHours(ref, now); if (h > lim) out.push({ id: 'E05', why: (it.lastAgentResponse || it.acknowledgedAt ? 'No Zenoti response for ' : 'No Zenoti response since reported: ') + fmtDur(h, 'business') }); }
+    }
+    if (sla && L('E06').auto) { const pl = sla.items.find((x) => x.k === 'plan'); if (pl && pl.state === 'breached') out.push({ id: 'E06', why: 'Action plan overdue by ' + fmtDur(pl.used - pl.target, sla.clock) }); }
+    if (it.deadline) {
+      const n = calUntil(it.deadline);
+      if (n <= 3 && L('E08').auto) out.push({ id: 'E08', why: n < 0 ? 'Deadline passed ' + (-n) + ' days ago' : (n === 0 ? 'Deadline is today' : 'Deadline in ' + n + ' days') });
+      else if (n <= 7 && L('E07').auto) out.push({ id: 'E07', why: 'Deadline in ' + n + ' days' });
+    }
+    if (it.workaround === 'No' && L('E13').auto) out.push({ id: 'E13', why: 'No workaround available' });
+    if (L('E15').auto) { const ref = parseDT(it.lastUpdate || it.reportedAt); const lim = (L('E15').days || 5) * hpd; if (ref) { const h = bizHours(ref, now); if (h > lim) out.push({ id: 'E15', why: 'No progress logged for ' + fmtDur(h, 'business') }); } }
+    return out;
+  }
+  function updateStatus(it, final) {
+    if (isClosed(it)) return { key: 'mute', label: 'Closed' };
+    if (cat(it) === 'resolved') return { key: 'mute', label: 'Validating' };
+    if (pausedNow(it)) return { key: 'mute', label: 'On hold' };
+    if (!it.lastUpdate) return { key: 'warn', label: 'No update logged', flag: 'none' };
+    const ref = parseDT(it.lastUpdate), now = new Date(), hpd = calInfo().hpd;
+    const L = (clauseById('E15') || {}).logic || {};
+    if (bizHours(ref, now) > (L.days || 5) * hpd) return { key: 'bad', label: 'Stale (E15)', flag: 'stale' };
+    const p = priObj(final); if (!p || !p.sla || !p.sla.updateH) return { key: 'ok', label: 'On cadence' };
+    return hoursBetween(ref, now, p.sla.clock) > p.sla.updateH ? { key: 'bad', label: 'Update overdue', flag: 'overdue' } : { key: 'ok', label: 'On cadence' };
+  }
+  function evaluate(it) {
+    const closed = isClosed(it), base = basePri(it), final = higher(base, it.overridePriority);
+    const sla = slaEval(it, final);
+    const auto = autoClauses(it, sla);
+    const ids = it.clauses.slice(); auto.forEach((a) => { if (ids.indexOf(a.id) < 0) ids.push(a.id); });
+    let sugg = base, driver = null;
+    if (rank(base) != null) ids.forEach((id) => { const c = clauseById(id); if (!c) return; const s = applyClause(base, c.logic); if (rank(s) < rank(sugg)) { sugg = s; driver = id; } });
+    const below = !isResolved(it) && rank(sugg) != null && rank(final) != null && rank(sugg) < rank(final);
+    const p = priObj(final), lvls = (cfg().levels || []).map((l) => l.id);
+    const expLevel = p ? p.level : '';
+    const levelLow = !isResolved(it) && expLevel && it.attentionLevel && lvls.indexOf(it.attentionLevel) < lvls.indexOf(expLevel);
+    const dl = it.deadline ? calUntil(it.deadline) : null;
+    const escalate = [];
+    if (p && p.owner) escalate.push(p.owner);
+    ids.forEach((id) => { const c = clauseById(id); if (c && c.escalateTo) escalate.push(c.escalateTo + ' (' + id + ')'); });
+    return { closed, base, final, sla, auto, ids, sugg, driver, below, expLevel, levelLow, escalate,
+      upd: updateStatus(it, final), triage: !closed && !final, noClass: !isResolved(it) && !matrixPri(it),
+      noPlan: !isResolved(it) && (!it.zenotiOwner || !it.nextAction), deadlineSoon: !isResolved(it) && dl != null && dl <= 7,
+      slaBreach: !closed && sla.items.some((x) => x.state === 'breached'), slaRisk: !closed && sla.items.some((x) => x.state === 'risk'),
+      statusCheck: it.status === 'Needs status check' };
+  }
+
+  /* ---------------- GitHub ---------------- */
+  function defaultGh() {
+    const g = { owner: '', repo: '', branch: '', path: 'issues.js', token: '' };
+    const h = location.hostname;
+    if (/\.github\.io$/i.test(h)) { g.owner = h.split('.')[0]; const seg = location.pathname.split('/').filter(Boolean); g.repo = seg.length && !/\.html?$/i.test(seg[0]) ? seg[0] : h; }
+    return g;
+  }
+  function loadGh() { const d = defaultGh(), s = readJSON(K.gh) || {}; ['owner', 'repo', 'branch', 'path', 'token'].forEach((k) => { if (s[k]) d[k] = s[k]; }); return d; }
+  const ghReady = () => !!(state.gh.owner && state.gh.repo && state.gh.path);
+  function ghHeaders(extra) { const h = { Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' }; if (state.gh.token) h.Authorization = 'Bearer ' + state.gh.token; return Object.assign(h, extra || {}); }
+  const ghBase = () => 'https://api.github.com/repos/' + encodeURIComponent(state.gh.owner) + '/' + encodeURIComponent(state.gh.repo);
+  const ghFileUrl = () => ghBase() + '/contents/' + state.gh.path.split('/').map(encodeURIComponent).join('/');
+  async function ghError(res) {
+    let msg = ''; try { const j = await res.json(); msg = j.message || ''; } catch (e) { /* ignore */ }
+    const e = new Error(msg || ('HTTP ' + res.status)); e.status = res.status;
+    if (res.status === 401) e.message = 'GitHub rejected the token (401). Check or replace it in Settings.';
+    else if (res.status === 403 && /rate limit/i.test(msg)) e.message = 'GitHub rate limit reached. Add a token in Settings or wait a few minutes.';
+    else if (res.status === 403) e.message = 'The token cannot write to this repository (403). It needs Contents: Read and write.';
+    else if (res.status === 404) e.message = 'Repository or file not found (404). Check owner, repository and path in Settings; a private repository also needs a token.';
+    return e;
+  }
+  function b64encode(str) { const bytes = new TextEncoder().encode(str); let bin = ''; for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(bin); }
+  function b64decode(b64) { const bin = atob(b64.replace(/\s/g, '')); const bytes = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i); return new TextDecoder().decode(bytes); }
+  function parseDataText(txt) {
+    const t = String(txt).replace(/^﻿/, '').replace(/^\s*(\/\/[^\n]*\n\s*)*/, '').replace(/^window\.ZENOTI_DATA\s*=\s*/, '').replace(/;\s*$/, '');
+    const d = JSON.parse(t); if (!d || !Array.isArray(d.issues)) throw new Error('No "issues" list found'); return d;
+  }
+  const serialize = (d) => '// Zenoti Issue Tracker data file. index.html reads it and saves it back through the GitHub API.\nwindow.ZENOTI_DATA = ' + JSON.stringify(d, null, 2) + ';\n';
+  async function ghRead() {
+    const ref = state.gh.branch ? '?ref=' + encodeURIComponent(state.gh.branch) : '';
+    const res = await fetch(ghFileUrl() + ref, { headers: ghHeaders(), cache: 'no-store' });
+    if (res.status === 404 && state.gh.token) {
+      const r2 = await fetch(ghBase(), { headers: ghHeaders(), cache: 'no-store' });
+      if (r2.ok) return { sha: null, data: state.base && state.base.issues.length ? clone(state.base) : emptyData(), missing: true };
+    }
+    if (!res.ok) throw await ghError(res);
+    const j = await res.json();
+    let text;
+    if (j.content) text = b64decode(j.content);
+    else { const r3 = await fetch(ghFileUrl() + ref, { headers: ghHeaders({ Accept: 'application/vnd.github.raw+json' }), cache: 'no-store' }); if (!r3.ok) throw await ghError(r3); text = await r3.text(); }
+    return { sha: j.sha, data: normalize(parseDataText(text)) };
+  }
+  async function ghWrite(data, sha, message) {
+    const body = { message, content: b64encode(serialize(data)) };
+    if (sha) body.sha = sha; if (state.gh.branch) body.branch = state.gh.branch;
+    const res = await fetch(ghFileUrl(), { method: 'PUT', headers: ghHeaders({ 'Content-Type': 'application/json' }), body: JSON.stringify(body) });
+    if (!res.ok) throw await ghError(res);
+    const j = await res.json(); return { sha: j.content.sha, commit: j.commit };
+  }
+  async function ghTest() {
+    const res = await fetch(ghBase(), { headers: ghHeaders(), cache: 'no-store' });
+    if (!res.ok) throw await ghError(res);
+    const j = await res.json(); return { push: !!(j.permissions && j.permissions.push), privateRepo: j.private, defaultBranch: j.default_branch, fullName: j.full_name };
+  }
+  function findConflict(remoteData, ops) {
+    for (const op of ops) {
+      if (op.kind !== 'upsert') continue;
+      const key = op.prevId || op.issue.id;
+      const r = remoteData.issues.find((x) => x.id === key) || (op.isNew ? remoteData.issues.find((x) => x.id === op.issue.id) : null);
+      if (op.isNew && r) return { op, remote: r, why: op.issue.id + ' already exists on GitHub.' };
+      if (!op.isNew && r && (r.rev || '') !== (op.baseRev || '')) return { op, remote: r, why: key + ' was changed on GitHub (' + (r.updatedAt || 'recently') + ') after you opened it.' };
+    }
+    return null;
+  }
+  const commitMessage = (ops) => (ops.length === 1 ? ops[0].label : ops.length + ' changes: ' + ops.map((o) => o.label).join('; ')).slice(0, 200) + ' (via tracker)';
+  let flushing = false;
+  async function flush() {
+    if (state.mode !== 'github' || !state.pending.length || flushing || state.conflict) return;
+    flushing = true; setSync('saving');
+    try {
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const remote = await ghRead();
+        const conflict = findConflict(remote.data, state.pending);
+        if (conflict) { state.remote = remote; state.conflict = conflict; recompute(); setSync('conflict'); renderAll(); return; }
+        const next = applyAll(remote.data, state.pending);
+        next.meta.exportedAt = new Date().toISOString();
+        try {
+          const w = await ghWrite(next, remote.sha, commitMessage(state.pending));
+          state.remote = { data: normalize(next), sha: w.sha }; state.pending = []; savePending(); state.lastCommit = w.commit;
+          recompute(); setSync('synced'); renderAll(); return;
+        } catch (e) { if (e.status === 409 || e.status === 422) continue; throw e; }
+      }
+      throw new Error('The file kept changing on GitHub while saving. Try again.');
+    } catch (e) { state.syncError = e.message; setSync('error'); renderChrome(); }
+    finally { flushing = false; }
+  }
+  function queue(op) {
+    state.pending.push(op); savePending(); recompute();
+    if (state.mode === 'github') { renderAll(); flush(); } else { renderAll(); }
+  }
+  function setSync(s) { state.sync = s; renderChrome(); }
+
+  /* ---------------- load ---------------- */
+  function migrateV1(base) {
+    const v1 = readJSON(K.v1);
+    if (!v1 || !v1.dirty || !v1.data || readJSON(K.pending)) return;
+    const old = normalize(v1.data); const ops = [];
+    old.issues.forEach((it) => { const b = base.issues.find((x) => x.id === it.id); if (!b || JSON.stringify(b) !== JSON.stringify(it)) ops.push({ kind: 'upsert', issue: it, baseRev: b ? b.rev || '' : '', isNew: !b, label: 'Update ' + it.id + ' (from earlier browser edits)' }); });
+    if (ops.length) { state.pending = ops; savePending(); }
+    removeKey(K.v1);
+  }
+  async function loadRemote() {
+    state.remote = await ghRead();
+    state.mode = state.gh.token ? 'github' : 'readonly';
+    if (state.remote.missing) state.localNotice = 'missing';
+  }
+  async function init() {
+    const prefs = readJSON(K.prefs);
+    if (prefs && prefs.filters) Object.keys(state.filters).forEach((k) => { if (prefs.filters[k] != null) state.filters[k] = prefs.filters[k]; });
+    if (prefs && prefs.sort) state.sort = prefs.sort;
+    state.gh = loadGh();
+    state.pending = readJSON(K.pending) || [];
+    const fileData = window.ZENOTI_DATA && Array.isArray(window.ZENOTI_DATA.issues) ? normalize(window.ZENOTI_DATA) : null;
+    state.base = fileData || emptyData();
+    const local = readJSON(K.local);
+    if (local && local.data && local.stamp > (state.base.meta.exportedAt || '')) { state.base = normalize(local.data); state.localNotice = 'newer'; }
+    migrateV1(state.base);
+    recompute(); renderAll();
+    if (ghReady()) {
+      setSync('loading');
+      try { await loadRemote(); } catch (e) { state.mode = 'local'; state.syncError = e.message; }
+    } else state.mode = 'local';
+    recompute(); setSync(state.mode === 'github' ? (state.pending.length ? 'saving' : 'synced') : state.mode === 'readonly' ? 'readonly' : 'local');
+    renderAll();
+    if (state.mode === 'github' && state.pending.length) flush();
+  }
+
+  /* ---------------- chrome ---------------- */
+  function renderChrome() {
+    const g = state.gh, repo = g.owner && g.repo ? g.owner + '/' + g.repo : '';
+    const pill = $('syncPill'); pill.dataset.s = state.sync;
+    const n = state.pending.length;
+    const txt = {
+      loading: 'Loading from GitHub…', saving: 'Saving to GitHub…',
+      synced: 'Saved to GitHub' + (repo ? ' · ' + repo : ''),
+      readonly: 'Read-only · ' + repo, local: n ? n + ' unsaved change' + (n === 1 ? '' : 's') : 'Local file',
+      error: 'Not saved to GitHub', conflict: 'Conflict on GitHub'
+    }[state.sync] || '';
+    $('syncText').textContent = txt;
+    $('btnSave').hidden = state.mode === 'github';
+    $('dirtyPill').hidden = !n || state.mode === 'github'; $('dirtyPill').textContent = n;
+    $('btnReload').hidden = !ghReady();
+    const b = [];
+    if (state.conflict) {
+      b.push('<div class="banner danger"><p><strong>' + esc(state.conflict.why) + '</strong> Keep your version (it overwrites theirs for this issue) or use the GitHub version (your edit to this issue is discarded).</p><button class="btn small" data-act="keepMine" type="button">Keep mine</button><button class="btn small" data-act="useTheirs" type="button">Use GitHub version</button></div>');
+    }
+    if (state.sync === 'error' && state.syncError) {
+      b.push('<div class="banner danger"><p><strong>' + esc(state.syncError) + '</strong>' + (n ? ' ' + n + ' change' + (n === 1 ? ' is' : 's are') + ' kept in this browser and will be saved when this is fixed.' : '') + '</p>' + (state.mode === 'github' ? '<button class="btn small" data-act="retry" type="button">Retry</button>' : '') + '<button class="btn small" data-act="settings" type="button">Settings</button></div>');
+    }
+    if (state.mode === 'readonly') {
+      b.push('<div class="banner info"><p><strong>Read-only view of ' + esc(repo) + '.</strong> ' + (n ? n + ' change' + (n === 1 ? ' is' : 's are') + ' only in this browser. ' : '') + 'Add a GitHub token in Settings to save changes to the site.</p><button class="btn small" data-act="settings" type="button">Connect GitHub</button></div>');
+    }
+    if (state.mode === 'local' && !state.syncError) {
+      b.push('<div class="banner ' + (n ? 'warn' : 'info') + '"><p>' + (n ? '<strong>' + n + ' change' + (n === 1 ? '' : 's') + ' saved in this browser only.</strong> ' : '') + 'Connect GitHub in Settings to save every change straight to your repository, or use <em>Save data file</em> and upload issues.js yourself.</p>' + (n ? '<button class="btn small" data-act="save" type="button">Save data file</button>' : '') + '<button class="btn small" data-act="settings" type="button">Connect GitHub</button></div>');
+    }
+    if (state.localNotice === 'newer' && state.mode === 'local') b.push('<div class="banner info"><p>This browser holds a newer copy than the issues.js next to this page. Upload your latest issues.js to the repository.</p></div>');
+    if (state.localNotice === 'missing') b.push('<div class="banner info"><p>No ' + esc(g.path) + ' in ' + esc(repo) + ' yet. Your first save will create it.</p></div>');
+    if (!storageOk) b.push('<div class="banner danger"><p>Browser storage is unavailable, so the GitHub token and unsaved changes are lost on reload.</p></div>');
+    $('banners').innerHTML = b.join('');
+  }
+  $('banners').addEventListener('click', (e) => {
+    const a = e.target.getAttribute('data-act'); if (!a) return;
+    if (a === 'save') saveFile();
+    if (a === 'settings') setView('settings');
+    if (a === 'retry') { state.syncError = ''; flush(); }
+    if (a === 'keepMine') { const c = state.conflict; c.op.baseRev = c.remote.rev || ''; c.op.isNew = false; c.op.prevId = c.op.prevId || c.op.issue.id; state.conflict = null; savePending(); flush(); }
+    if (a === 'useTheirs') { const c = state.conflict; state.pending = state.pending.filter((o) => o !== c.op); state.conflict = null; savePending(); recompute(); renderAll(); if (state.pending.length) flush(); else setSync('synced'); }
+  });
+
+  /* ---------------- metrics ---------------- */
+  const FLAGS = [['', 'Any flag'], ['slaBreach', 'SLA breached'], ['slaRisk', 'SLA at risk'], ['overdue', 'Update overdue'], ['stale', 'Stale (E15)'], ['none', 'No update logged'],
+    ['below', 'Below rule suggestion'], ['noClass', 'Needs ITIL classification'], ['levelLow', 'Below expected attention level'], ['noPlan', 'Missing owner / next action'],
+    ['statusCheck', 'Needs status check'], ['triage', 'No priority'], ['deadline', 'Deadline ≤ 7 days']];
+  function flagMatch(f, ev) {
+    switch (f) {
+      case 'overdue': case 'stale': case 'none': return ev.upd.flag === f;
+      case 'slaBreach': return ev.slaBreach; case 'slaRisk': return ev.slaRisk; case 'below': return ev.below; case 'noClass': return ev.noClass;
+      case 'levelLow': return ev.levelLow; case 'noPlan': return ev.noPlan; case 'statusCheck': return ev.statusCheck; case 'triage': return ev.triage;
+      case 'deadline': return ev.deadlineSoon; default: return true;
+    }
+  }
+  function renderMetrics() {
+    const open = state.data.issues.filter((i) => !isClosed(i)), evs = open.map(evaluate);
+    const count = (f) => evs.filter((e) => flagMatch(f, e)).length;
+    const byP = {}; priNames().forEach((n) => { byP[n] = 0; }); let nop = 0;
+    evs.forEach((e) => { if (e.final) byP[e.final]++; else nop++; });
+    const daily = open.reduce((s, i) => s + ((i.financialPeriod || 'per day') === 'per day' && i.financialImpact ? Number(i.financialImpact) : 0), 0);
+    const total = open.length || 1;
+    const seg = cfg().priorities.map((p) => (byP[p.name] ? '<span style="width:' + (byP[p.name] / total * 100) + '%;background:' + p.color + '" title="' + esc(p.itil + ' ' + p.name) + ': ' + byP[p.name] + '"></span>' : '')).join('') + (nop ? '<span style="width:' + (nop / total * 100) + '%;background:var(--border-strong)"></span>' : '');
+    const legend = cfg().priorities.map((p) => '<button type="button" data-pri="' + esc(p.name) + '"><i style="background:' + p.color + '"></i>' + esc(p.itil + ' ' + p.name) + ' <strong class="num">' + byP[p.name] + '</strong></button>').join('') + (nop ? '<button type="button" data-flag="triage"><i style="background:var(--border-strong)"></i>No priority <strong class="num">' + nop + '</strong></button>' : '');
+    const m = (flag, label, v, cls) => '<button type="button" class="metric ' + (v ? cls : '') + '" data-flag="' + flag + '" aria-pressed="' + (state.filters.flag === flag && state.filters.status === 'open' && !!flag) + '"><span class="v">' + v + '</span><span class="l">' + label + '</span></button>';
+    $('metrics').innerHTML = m('', 'Ongoing issues', open.length, '') +
+      '<div class="metric dist"><span class="l">Ongoing issues by ITIL priority</span><div class="distbar" aria-hidden="true">' + seg + '</div><div class="distlegend">' + legend + '</div></div>' +
+      m('slaBreach', 'SLA breached', count('slaBreach'), 'alert') + m('slaRisk', 'SLA at risk (≥ 75%)', count('slaRisk'), 'caution') +
+      m('overdue', 'Updates overdue', count('overdue'), 'alert') + m('stale', 'Stale > 5 bd (E15)', count('stale'), 'alert') +
+      m('below', 'Below rule suggestion', count('below'), 'caution') + m('noClass', 'Needs impact × urgency', count('noClass'), 'caution') +
+      m('statusCheck', 'Needs status check', count('statusCheck'), 'caution') + m('noPlan', 'Missing owner / next action', count('noPlan'), 'caution') +
+      m('deadline', 'Deadline within 7 days', count('deadline'), 'alert') +
+      '<div class="metric static"><span class="v num">' + (daily ? fmtMXN(daily) : '0') + '</span><span class="l">Known daily impact (MXN)</span></div>';
+  }
+  $('metrics').addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.hasAttribute('data-pri')) { state.filters.status = 'open'; state.filters.pri = b.getAttribute('data-pri'); state.filters.flag = ''; }
+    else if (b.hasAttribute('data-flag')) { const f = b.getAttribute('data-flag'); state.filters.status = 'open'; state.filters.pri = ''; state.filters.flag = state.filters.flag === f ? '' : f; }
+    else return;
+    savePrefs(); renderFilters(); renderTable(); renderMetrics();
+  });
+  const savePrefs = () => writeJSON(K.prefs, { filters: state.filters, sort: state.sort });
+
+  /* ---------------- filters & table ---------------- */
+  const opts = (sel, list, cur) => { sel.innerHTML = list.map((o) => '<option value="' + esc(o[0]) + '"' + (o[0] === cur ? ' selected' : '') + '>' + esc(o[1]) + '</option>').join(''); };
+  function allTags() { const s = {}; cfg().tags.forEach((t) => { if (t.family !== 'Request type') s[t.tag] = 1; }); state.data.issues.forEach((i) => i.tags.forEach((t) => { s[t] = 1; })); return Object.keys(s).sort(); }
+  function renderFilters() {
+    const f = state.filters; $('fQ').value = f.q;
+    opts($('fStatus'), [['open', 'Ongoing (not closed)'], ['all', 'All statuses'], ['closed', 'Closed only']].concat(cfg().statuses.map((s) => ['=' + s.name, s.name])), f.status);
+    opts($('fPri'), [['', 'Any priority']].concat(cfg().priorities.map((p) => [p.name, p.itil + ' · ' + p.name])).concat([['-', 'No priority']]), f.pri);
+    opts($('fFn'), [['', 'Any function']].concat(cfg().functions.map((p) => [p, p])), f.fn);
+    opts($('fTag'), [['', 'Any tag']].concat(allTags().map((p) => [p, p])), f.tag);
+    opts($('fFlag'), FLAGS, f.flag);
+  }
+  ['fStatus', 'fPri', 'fFn', 'fTag', 'fFlag'].forEach((id) => $(id).addEventListener('change', function () { state.filters[{ fStatus: 'status', fPri: 'pri', fFn: 'fn', fTag: 'tag', fFlag: 'flag' }[id]] = this.value; savePrefs(); renderTable(); renderMetrics(); }));
+  $('fQ').addEventListener('input', function () { state.filters.q = this.value; savePrefs(); renderTable(); });
+  $('btnClear').addEventListener('click', () => { state.filters = { q: '', status: 'open', pri: '', fn: '', tag: '', flag: '' }; savePrefs(); renderFilters(); renderTable(); renderMetrics(); });
+
+  const COLS = [{ k: 'id', label: 'ID' }, { k: 'title', label: 'Issue' }, { k: 'status', label: 'Status' }, { k: 'priority', label: 'Priority' }, { k: 'sla', label: 'SLA' },
+    { k: 'level', label: 'Level', cls: 'hide-md' }, { k: 'zenotiOwner', label: 'Zenoti owner', cls: 'hide-md' }, { k: 'lastUpdate', label: 'Last update' },
+    { k: 'tags', label: 'Tags', cls: 'hide-md', nosort: true }, { k: 'clauses', label: 'Clauses', cls: 'hide-md', nosort: true }, { k: 'financialImpact', label: 'MXN', cls: 'right hide-md' }];
+  const SLA_ORDER = { breached: 0, risk: 1, missed: 2, paused: 3, ok: 4, met: 5, nostart: 6, na: 7 };
+  function sortVal(it, ev, k) {
+    if (k === 'priority') { const r = rank(ev.final); return r == null ? 99 : r; }
+    if (k === 'sla') { const w = ev.sla.worst; return w ? SLA_ORDER[w.state] * 1e6 + (w.left || 0) : 9e9; }
+    if (k === 'level') return it.attentionLevel || 'Z';
+    if (k === 'financialImpact') return it.financialImpact ? -Number(it.financialImpact) : 0;
+    if (k === 'lastUpdate') return it.lastUpdate || '0000';
+    return String(it[k] || '').toLowerCase();
+  }
+  function matches(it, ev) {
+    const f = state.filters;
+    if (f.status === 'open' && ev.closed) return false;
+    if (f.status === 'closed' && !ev.closed) return false;
+    if (f.status.charAt(0) === '=' && it.status !== f.status.slice(1)) return false;
+    if (f.pri === '-' && ev.final) return false;
+    if (f.pri && f.pri !== '-' && ev.final !== f.pri) return false;
+    if (f.fn && it.function !== f.fn) return false;
+    if (f.tag && it.tags.indexOf(f.tag) < 0) return false;
+    if (f.flag && !flagMatch(f.flag, ev)) return false;
+    if (f.q) { const hay = [it.id, it.title, it.impactSummary, it.zenotiOwner, it.status, it.tags.join(' '), it.clauses.join(' '), it.nextAction, it.zenotiTicket, it.linkedRecords].join(' ').toLowerCase(); if (f.q.toLowerCase().split(/\s+/).filter(Boolean).some((w) => hay.indexOf(w) < 0)) return false; }
+    return true;
+  }
+  function slaChip(ev) {
+    const w = ev.sla.worst; if (!w) return '<span class="muted">—</span>';
+    const c = ev.sla.clock;
+    const map = { breached: ['bad', 'Breached'], risk: ['warn', 'At risk'], missed: ['bad', 'Missed'], paused: ['mute', 'Paused'], ok: ['ok', 'On track'], met: ['ok', 'Met'], nostart: ['mute', 'No start time'] };
+    const [k, l] = map[w.state] || ['mute', w.state];
+    let sub = '';
+    if (w.state === 'breached') sub = w.label + ' +' + fmtDur(w.used - w.target, c);
+    else if (w.state === 'risk' || w.state === 'ok') sub = w.label + ' · ' + fmtDur(w.left, c) + ' left';
+    else if (w.state === 'missed' || w.state === 'met') sub = w.label;
+    return '<span class="st st-' + k + '">' + l + '</span>' + (sub ? '<span class="sub muted">' + esc(sub) + '</span>' : '');
+  }
+  function renderTable() {
+    const s = state.sort;
+    $('thead').innerHTML = '<tr>' + COLS.map((c) => '<th class="' + (c.cls || '') + '"' + (s.key === c.k ? ' aria-sort="' + (s.dir > 0 ? 'ascending' : 'descending') + '"' : '') + '>' + (c.nosort ? '<span class="h">' + c.label + '</span>' : '<button type="button" data-sort="' + c.k + '">' + c.label + '</button>') + '</th>').join('') + '</tr>';
+    const rows = state.data.issues.map((it, idx) => ({ it, ev: evaluate(it), idx })).filter((r) => matches(r.it, r.ev));
+    rows.sort((a, b) => {
+      const va = sortVal(a.it, a.ev, s.key), vb = sortVal(b.it, b.ev, s.key);
+      if (va < vb) return -s.dir; if (va > vb) return s.dir;
+      const ra = rank(a.ev.final), rb = rank(b.ev.final); const x = (ra == null ? 99 : ra) - (rb == null ? 99 : rb); if (x) return x;
+      return a.it.id < b.it.id ? -1 : 1;
+    });
+    $('tbody').innerHTML = rows.map(({ it, ev, idx }) => {
+      const p = priObj(ev.final);
+      let pri = ev.final ? '<span class="pri pri-' + esc(ev.final) + '">' + esc((p.itil ? p.itil + ' · ' : '') + ev.final) + '</span>' : '<span class="pri pri-none">No priority</span>';
+      if (ev.below) pri += '<span class="sub warn" title="Strongest clause ' + esc(ev.driver) + '">▲ Rules: ' + esc(ev.sugg) + ' (' + esc(ev.driver) + ')</span>';
+      else if (ev.noClass && !ev.closed) pri += '<span class="sub muted">Set impact × urgency</span>';
+      const tags = it.tags.slice(0, 3).map((t) => '<span class="tag">' + esc(t) + '</span>').join('') + (it.tags.length > 3 ? '<span class="tag" title="' + esc(it.tags.slice(3).join(', ')) + '">+' + (it.tags.length - 3) + '</span>' : '');
+      const cl = it.clauses.map((c) => '<span class="clause">' + esc(c) + '</span>').join('') + ev.auto.filter((a) => it.clauses.indexOf(a.id) < 0).map((a) => '<span class="clause auto" title="Automatic: ' + esc(a.why) + '">' + esc(a.id) + '</span>').join('');
+      const lvl = it.attentionLevel ? '<span class="lvl">' + esc(it.attentionLevel) + '</span>' + (ev.levelLow ? '<span class="sub warn">▲ expected ' + esc(ev.expLevel) + '</span>' : '') : (ev.expLevel && !ev.closed ? '<span class="muted">— </span><span class="sub muted">expected ' + esc(ev.expLevel) + '</span>' : '<span class="muted">—</span>');
+      const lu = it.lastUpdate ? '<span class="num">' + esc(fmtDT(it.lastUpdate)) + '</span>' : '';
+      return '<tr tabindex="0" data-idx="' + idx + '" class="' + (ev.closed ? 'closed' : '') + '">' +
+        '<td class="mono id-cell">' + esc(it.id) + '</td>' +
+        '<td class="title-cell"><strong>' + esc(it.title || '(untitled)') + '</strong>' + (it.impactSummary ? '<span class="imp">' + esc(it.impactSummary) + '</span>' : '') + '</td>' +
+        '<td>' + esc(it.status) + '</td><td>' + pri + '</td><td>' + slaChip(ev) + '</td>' +
+        '<td class="hide-md">' + lvl + '</td>' +
+        '<td class="hide-md">' + (it.zenotiOwner ? esc(it.zenotiOwner) : '<span class="muted">—</span>') + '</td>' +
+        '<td>' + lu + '<span class="sub"><span class="st st-' + ev.upd.key + '">' + esc(ev.upd.label) + '</span></span></td>' +
+        '<td class="hide-md tags-cell">' + tags + '</td>' +
+        '<td class="hide-md">' + (cl || '<span class="muted">—</span>') + '</td>' +
+        '<td class="right num hide-md">' + (it.financialImpact ? fmtMXN(it.financialImpact) + '<span class="sub muted">' + esc(it.financialPeriod || '') + '</span>' : '<span class="muted">—</span>') + '</td></tr>';
+    }).join('');
+    $('emptyState').hidden = rows.length > 0;
+    $('resultCount').textContent = rows.length + ' of ' + state.data.issues.length + ' issues';
+  }
+  $('thead').addEventListener('click', (e) => { const b = e.target.closest('[data-sort]'); if (!b) return; const k = b.getAttribute('data-sort'); state.sort = state.sort.key === k ? { key: k, dir: -state.sort.dir } : { key: k, dir: 1 }; savePrefs(); renderTable(); });
+  $('tbody').addEventListener('click', (e) => { const tr = e.target.closest('tr'); if (tr) openIssue(+tr.getAttribute('data-idx')); });
+  $('tbody').addEventListener('keydown', (e) => { if (e.key === 'Enter') { const tr = e.target.closest('tr'); if (tr) openIssue(+tr.getAttribute('data-idx')); } });
+
+  /* ---------------- reference view ---------------- */
+  const table = (head, rows) => '<div class="table-wrap"><table><thead><tr>' + head.map((h) => '<th><span class="h">' + esc(h) + '</span></th>').join('') + '</tr></thead><tbody>' + rows.map((r) => '<tr>' + r.map((x) => '<td>' + x + '</td>').join('') + '</tr>').join('') + '</tbody></table></div>';
+  function priBadge(n) { const p = priObj(n); return p ? '<span class="pri pri-' + esc(n) + '">' + esc(p.itil + ' · ' + n) + '</span>' : esc(n); }
+  function matrixHTML(sel) {
+    const c = cfg().itil;
+    let h = '<div class="matrix"><div class="hd">Impact ↓ / Urgency →</div>' + c.urgency.map((u) => '<div class="hd">' + esc(u.label) + '</div>').join('');
+    c.impact.forEach((im) => { h += '<div class="hd">' + esc(im.label) + '</div>' + c.urgency.map((u) => { const p = c.matrix[im.level + '|' + u.level]; return '<div class="cell pri-' + esc(p) + '">' + esc((priObj(p) || {}).itil + ' · ' + p) + '</div>'; }).join(''); });
+    return h + '</div>';
+  }
+  function renderRef() {
+    const c = cfg(), ci = calInfo();
+    const autoTxt = { agentResponse: 'Automatic: no Zenoti response for more than ' + ((clauseById('E05') || {}).logic || {}).hours + ' business hours', planBreach: 'Automatic: action-plan SLA breached', deadline7: 'Automatic: business deadline 4–7 days away', deadline3: 'Automatic: business deadline 3 days away or less, or passed', noWorkaround: 'Automatic: workaround = No', stale: 'Automatic: no progress logged for ' + ((clauseById('E15') || {}).logic || {}).days + ' business days' };
+    $('view-ref').innerHTML =
+      '<h2>How priority and SLAs work</h2><div class="how">' +
+      '<div><h3>1 · ITIL priority</h3><p>Impact × urgency gives the base priority, P1 to P5, mapped to Prioritary … Preferable. Issues without both use their recorded base priority until classified.</p></div>' +
+      '<div><h3>2 · Escalation clauses</h3><p>The strongest single clause that applies (manual or automatic; no stacking) gives the rule suggestion. An override can only raise the final priority.</p></div>' +
+      '<div><h3>3 · SLA clocks</h3><p>Response, action plan and resolution run from "Reported to Zenoti" on the business calendar for the final priority. "On hold – waiting on FPT" pauses them; at 75% an SLA is at risk.</p></div>' +
+      '<div><h3>4 · Attention level</h3><p>Each priority expects a support tier (N1–N3). A lower current tier is flagged as functional escalation to request; the "escalate to" owners are the hierarchical escalation.</p></div></div>' +
+      '<h2>ITIL priority matrix</h2>' + matrixHTML() +
+      '<h2>Impact and urgency definitions</h2>' + table(['Dimension', 'Level', 'Use when'], c.itil.impact.map((i) => ['Impact', esc(i.label), esc(i.description)]).concat(c.itil.urgency.map((u) => ['Urgency', esc(u.label), esc(u.description)]))) +
+      '<h2>SLA targets</h2><p class="muted">Business hours: ' + esc(c.calendar.start) + '–' + esc(c.calendar.end) + ' (' + ci.hpd + ' h = 1 business day), ' + ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].filter((d, i) => ci.days.indexOf(i) >= 0).join(', ') + '; ' + (c.calendar.holidays || []).length + ' holidays. Edit these in Settings to match the Zenoti contract.</p>' +
+      table(['Priority', 'Clock', 'Response', 'Action plan', 'Update every', 'Resolution', 'Expected level', 'Escalate to'], c.priorities.map((p) => [priBadge(p.name), p.sla.clock === '24x7' ? '24×7' : 'Business hours', fmtTarget(p.sla.ackH, p.sla.clock), fmtTarget(p.sla.planH, p.sla.clock), fmtTarget(p.sla.updateH, p.sla.clock), fmtTarget(p.sla.resolveH, p.sla.clock), '<span class="lvl">' + esc(p.level) + '</span>', esc(p.owner)])) +
+      '<h2>Attention levels (functional escalation)</h2>' + table(['Level', 'Who', 'Handles'], c.levels.map((l) => ['<span class="lvl">' + esc(l.id) + '</span>', esc(l.name.replace(/^N\d\s·\s/, '')), esc(l.description)])) +
+      '<h2>Status lifecycle</h2>' + table(['Status', 'Stage', 'SLA clock', 'Meaning'], c.statuses.map((s) => [esc(s.name), esc(s.category), s.pausesSla ? 'Paused' : (s.category === 'closed' ? 'Stopped' : 'Running'), esc(s.description || '')])) +
+      '<h2>Escalation clauses</h2>' + table(['ID', 'Trigger', 'Condition', 'Priority effect', 'Escalate to', 'Channel', 'Evidence', 'Clock'], c.clauses.map((r) => ['<span class="mono">' + esc(r.id) + '</span>', esc(r.trigger) + (r.logic && r.logic.auto ? '<span class="sub muted">' + esc(autoTxt[r.logic.auto] || '') + '</span>' : ''), esc(r.condition), esc(r.effect), esc(r.escalateTo), esc(r.channel), esc(r.evidence), esc(r.clock)])) +
+      '<h2>Priority framework</h2>' + table(['Priority', 'Definition', 'Entry criteria', 'Update cadence'], c.priorities.map((p) => [priBadge(p.name), esc(p.definition), esc(p.entry), esc(p.cadence)])) +
+      '<h2>Tagging standard</h2>' + table(['Family', 'Tag', 'Use when', 'Default priority', 'Companion tags'], c.tags.map((r) => [esc(r.family), '<span class="tag">' + esc(r.tag) + '</span>', esc(r.use), esc(r.defaultPriority), esc(r.companions)])) +
+      (c.stages ? '<h2>Operating model</h2>' + table(['Stage', 'When', 'Required action', 'Owner', 'Timing'], c.stages.map((r) => [esc(r.stage), esc(r.when), esc(r.action), esc(r.owner), esc(r.timing)])) : '');
+  }
+
+  /* ---------------- settings view ---------------- */
+  function renderSettings() {
+    const g = state.gh, c = cfg(), cal = c.calendar;
+    const modeTxt = { github: 'Connected: every save is committed to ' + g.owner + '/' + g.repo + '.', readonly: 'Reading ' + g.owner + '/' + g.repo + ' without a token, so changes stay in this browser.', local: 'Not connected. Changes stay in this browser until you save the data file.' }[state.mode];
+    $('view-settings').innerHTML =
+      '<h2>Save to GitHub</h2><div class="card"><p><strong>' + esc(modeTxt) + '</strong></p>' +
+      '<div class="grid">' +
+      '<div class="field"><label for="s_owner">Owner (user or organization)</label><input id="s_owner" value="' + esc(g.owner) + '" autocomplete="off"></div>' +
+      '<div class="field"><label for="s_repo">Repository</label><input id="s_repo" value="' + esc(g.repo) + '" autocomplete="off"></div>' +
+      '<div class="field"><label for="s_branch">Branch</label><input id="s_branch" value="' + esc(g.branch) + '" placeholder="default branch" autocomplete="off"></div>' +
+      '<div class="field"><label for="s_path">Data file path</label><input id="s_path" value="' + esc(g.path) + '" autocomplete="off"></div>' +
+      '<div class="field wide"><label for="s_token">Personal access token</label><input id="s_token" type="password" value="' + esc(g.token) + '" placeholder="github_pat_… or ghp_…" autocomplete="off"><span class="hint">Stored only in this browser (localStorage). It is never written to the repository.</span></div>' +
+      '</div><div class="row" style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn primary" type="button" id="s_connect">Save and connect</button><button class="btn" type="button" id="s_test">Test access</button><button class="btn" type="button" id="s_forget">Forget token</button><span id="s_msg" class="muted" style="align-self:center"></span></div>' +
+      '<details style="margin-top:12px"><summary>How to create the token</summary><ol class="steps">' +
+      '<li>Your own repository: GitHub → Settings → Developer settings → <strong>Fine-grained tokens</strong> → Generate new token. Repository access: <em>Only select repositories</em> → this repository. Permissions: <strong>Contents: Read and write</strong>.</li>' +
+      '<li>Someone else\'s personal repository (you are a collaborator): fine-grained tokens cannot reach it. Use a <strong>classic token</strong> with the <code>public_repo</code> scope (public repository) or <code>repo</code> (private).</li>' +
+      '<li>Set an expiration date and paste the token above. Each editor uses their own token.</li></ol>' +
+      '<p class="muted">Privacy: if the repository is public, anyone can read issues.js. To keep the data private, store issues.js in a private repository and point Owner/Repository above to it. The public page then loads data only for people with a token.</p></details></div>' +
+      '<h2>SLA targets</h2><div class="card"><p class="muted">Hours are business hours on the calendar below, or wall-clock hours for 24×7. Leave a target blank for "n/a". Replace these defaults with your Zenoti contract SLAs.</p><div class="table-wrap"><table class="set-table"><thead><tr><th>Priority</th><th>Clock</th><th>Response h</th><th>Action plan h</th><th>Update every h</th><th>Resolution h</th><th>Expected level</th></tr></thead><tbody>' +
+      c.priorities.map((p, i) => '<tr><td>' + priBadge(p.name) + '</td><td><select data-p="' + i + '" data-f="clock"><option value="business"' + (p.sla.clock !== '24x7' ? ' selected' : '') + '>Business</option><option value="24x7"' + (p.sla.clock === '24x7' ? ' selected' : '') + '>24×7</option></select></td>' +
+        ['ackH', 'planH', 'updateH', 'resolveH'].map((f) => '<td><input type="number" min="0" step="0.5" data-p="' + i + '" data-f="' + f + '" value="' + (p.sla[f] == null ? '' : p.sla[f]) + '" aria-label="' + esc(p.name + ' ' + f) + '"></td>').join('') +
+        '<td><select data-p="' + i + '" data-f="level">' + c.levels.map((l) => '<option' + (l.id === p.level ? ' selected' : '') + '>' + esc(l.id) + '</option>').join('') + '</select></td></tr>').join('') +
+      '</tbody></table></div>' +
+      '<h2 style="font-size:14px">Business calendar</h2><div class="grid"><div class="field"><label for="c_start">Business day starts</label><input type="time" id="c_start" value="' + esc(cal.start) + '"></div><div class="field"><label for="c_end">Business day ends</label><input type="time" id="c_end" value="' + esc(cal.end) + '"></div>' +
+      '<div class="field wide"><span class="lbl">Business days</span><div>' + ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d, i) => '<label style="margin-right:10px"><input type="checkbox" data-day="' + i + '"' + ((cal.days || []).indexOf(i) >= 0 ? ' checked' : '') + '> ' + d + '</label>').join('') + '</div></div>' +
+      '<div class="field wide"><label for="c_hol">Holidays (one per line: YYYY-MM-DD name)</label><textarea id="c_hol" rows="6">' + esc((cal.holidays || []).map((h) => h.date + ' ' + (h.name || '')).join('\n')) + '</textarea><span class="hint">Prefilled with Mexico\'s official rest days (LFT art. 74) for 2026–2027. Add Zenoti-observed holidays if your contract excludes them.</span></div></div>' +
+      '<div style="margin-top:12px;display:flex;gap:8px;align-items:center"><button class="btn primary" type="button" id="c_save">Save SLA settings</button><span id="c_msg" class="muted"></span></div></div>';
+    const read = () => ({ owner: $('s_owner').value.trim(), repo: $('s_repo').value.trim().replace(/\.git$/, ''), branch: $('s_branch').value.trim(), path: $('s_path').value.trim() || 'issues.js', token: $('s_token').value.trim() });
+    $('s_test').addEventListener('click', async () => {
+      const prev = state.gh; state.gh = read(); $('s_msg').textContent = 'Testing…';
+      try { const r = await ghTest(); $('s_msg').textContent = r.fullName + ' · ' + (r.privateRepo ? 'private' : 'public') + ' · default branch ' + r.defaultBranch + ' · ' + (r.push ? 'token can save ✓' : (state.gh.token ? 'token is read-only ✗' : 'no token: read-only')); }
+      catch (e) { $('s_msg').textContent = e.message; }
+      state.gh = prev;
+    });
+    $('s_connect').addEventListener('click', async () => {
+      const g = read(); if (!g.owner || !g.repo) { $('s_msg').textContent = 'Enter the owner and repository first.'; return; }
+      state.gh = g; writeJSON(K.gh, state.gh); $('s_msg').textContent = 'Connecting…';
+      state.syncError = ''; setSync('loading');
+      try { await loadRemote(); recompute(); setSync(state.mode === 'github' ? 'synced' : 'readonly'); $('s_msg').textContent = state.mode === 'github' ? 'Connected. Saves go to GitHub.' : 'Connected read-only (no token).'; renderAll(); if (state.mode === 'github' && state.pending.length) flush(); }
+      catch (e) { state.mode = 'local'; state.syncError = e.message; setSync('error'); $('s_msg').textContent = e.message; }
+    });
+    $('s_forget').addEventListener('click', () => { state.gh.token = ''; writeJSON(K.gh, state.gh); $('s_token').value = ''; if (state.mode === 'github') state.mode = 'readonly'; setSync(state.mode === 'readonly' ? 'readonly' : state.sync); renderAll(); toast('Token removed from this browser.'); });
+    $('c_save').addEventListener('click', () => {
+      const nc = clone(cfg());
+      document.querySelectorAll('#view-settings [data-p]').forEach((el) => {
+        const p = nc.priorities[+el.dataset.p], f = el.dataset.f;
+        if (f === 'clock') p.sla.clock = el.value; else if (f === 'level') p.level = el.value; else p.sla[f] = el.value === '' ? null : Number(el.value);
+      });
+      nc.calendar.start = $('c_start').value || '09:00'; nc.calendar.end = $('c_end').value || '18:00';
+      nc.calendar.days = Array.from(document.querySelectorAll('#view-settings [data-day]')).filter((x) => x.checked).map((x) => +x.dataset.day);
+      nc.calendar.holidays = $('c_hol').value.split('\n').map((l) => l.trim()).filter(Boolean).map((l) => { const m = /^(\d{4}-\d{2}-\d{2})\s*(.*)$/.exec(l); return m ? { date: m[1], name: m[2] } : null; }).filter(Boolean);
+      queue({ kind: 'config', config: nc, label: 'Update SLA settings' });
+      $('c_msg').textContent = state.mode === 'github' ? 'Saving to GitHub…' : 'Saved in this browser.';
+    });
+  }
+
+  /* ---------------- tabs ---------------- */
+  function setView(v) {
+    state.view = v;
+    ['issues', 'ref', 'settings'].forEach((x) => { $('tab-' + x).setAttribute('aria-selected', x === v); $('view-' + x).hidden = x !== v; });
+    if (v === 'ref') renderRef(); if (v === 'settings') renderSettings();
+  }
+  ['issues', 'ref', 'settings'].forEach((x) => $('tab-' + x).addEventListener('click', () => setView(x)));
+
+  /* ---------------- editor ---------------- */
+  let draft = null, editIdx = -1, original = null, lastFocus = null, deleteArmed = false;
+  const FORM = [
+    { title: 'Identify', fields: [
+      { k: 'id', label: 'Issue ID', req: true, hint: 'Zenoti ticket or internal tracker ID' },
+      { k: 'status', label: 'Status', type: 'select', req: true, options: () => cfg().statuses.map((s) => s.name), dyn: 'status' },
+      { k: 'title', label: 'Issue title', req: true, wide: true, hint: 'Concise symptom and affected process' },
+      { k: 'period', label: 'Detected / reference period', hint: 'e.g. Jun 2025, Aug–Oct 2026' },
+      { k: 'detectedDate', label: 'Date detected', type: 'date' },
+      { k: 'reporter', label: 'Reporter / FPT owner' },
+      { k: 'zenotiTicket', label: 'Zenoti ticket number' }] },
+    { title: 'Classify', fields: [
+      { k: 'requestType', label: 'Request type', type: 'select', req: true, options: () => cfg().requestTypes, dyn: 'itilType' },
+      { k: 'function', label: 'Primary function', type: 'select', req: true, options: () => cfg().functions, hint: 'Added to the tags automatically' },
+      { k: 'tags', label: 'Tags', type: 'tags', wide: true }] },
+    { title: 'Impact', fields: [
+      { k: 'impactSummary', label: 'Impact summary', type: 'textarea', req: true, wide: true, hint: 'Operational, member and financial consequence' },
+      { k: 'locations', label: 'Locations affected', req: true, hint: 'Count and names if known' },
+      { k: 'membersAffected', label: 'Users / members affected', hint: 'Estimated count' },
+      { k: 'financialImpact', label: 'Estimated financial impact (MXN)', type: 'number' },
+      { k: 'financialPeriod', label: 'Financial impact period', type: 'select', options: () => ['per day', 'per month', 'one-time'] },
+      { k: 'workaround', label: 'Workaround available?', type: 'select', options: () => ['Yes', 'No'], hint: '"No" applies E13 automatically' }] },
+    { title: 'Priority (ITIL)', custom: 'priority' },
+    { title: 'SLA and attention level', custom: 'sla' },
+    { title: 'Commitments and monitoring', fields: [
+      { k: 'zenotiOwner', label: 'Zenoti accountable owner' },
+      { k: 'nextActionDue', label: 'Next action due', type: 'date' },
+      { k: 'nextAction', label: 'Next committed action', wide: true },
+      { k: 'deadline', label: 'Business deadline', type: 'date', hint: 'Go-live, regulatory or committed date (E07 / E08)' },
+      { k: 'nextReview', label: 'Next governance review', type: 'date' },
+      { k: 'lastUpdate', label: 'Last substantive update', type: 'datetime', hint: 'Set automatically when you add an update below' },
+      { k: 'lastAgentResponse', label: 'Last Zenoti response', type: 'datetime', hint: '> 24 business hours ago applies E05' },
+      { k: 'linkedRecords', label: 'Linked records', hint: 'Problem record, related tickets or issues' },
+      { k: 'recommendedAction', label: 'Recommended next action', type: 'textarea', wide: true }] },
+    { title: 'Closure', fields: [
+      { k: 'closureCriteria', label: 'Closure acceptance criteria', type: 'textarea', wide: true },
+      { k: 'rcaRequired', label: 'RCA required?', type: 'select', options: () => ['Yes', 'No'] },
+      { k: 'preventionOwner', label: 'Recurrence-prevention owner' },
+      { k: 'evidence', label: 'Evidence', type: 'textarea', wide: true, hint: 'Ticket links, email subjects and dates, screenshots' },
+      { k: 'closureNotes', label: 'Validation / closure notes', type: 'textarea', wide: true, dyn: 'closeWarn' }] },
+    { title: 'Activity log', custom: 'activity' }
+  ];
+  const REQUIRED = []; FORM.forEach((s) => (s.fields || []).forEach((f) => { if (f.req) REQUIRED.push(f); }));
+  function nextId() { let max = 0; state.data.issues.forEach((i) => { const m = /^INC-(\d+)$/.exec(i.id); if (m) max = Math.max(max, +m[1]); }); let n = String(max + 1); while (n.length < 3) n = '0' + n; return 'INC-' + n; }
+  function fieldHTML(f) {
+    const v = draft[f.k], id = 'f_' + f.k, reqm = f.req ? ' <span class="req" aria-hidden="true">*</span>' : '';
+    if (f.type === 'tags') return '<div class="field wide"><span class="lbl">Tags</span><div id="tagPicker"></div></div>';
+    let ctl;
+    if (f.type === 'select') {
+      const list = f.options(), cur = v == null ? '' : String(v), extra = cur && list.indexOf(cur) < 0 ? [cur] : [];
+      const labels = f.labels || {};
+      ctl = '<select id="' + id + '" data-k="' + f.k + '"><option value="">—</option>' + list.concat(extra).map((o) => '<option value="' + esc(o) + '"' + (o === cur ? ' selected' : '') + '>' + esc(labels[o] || o) + '</option>').join('') + '</select>';
+    } else if (f.type === 'textarea') ctl = '<textarea id="' + id + '" data-k="' + f.k + '" rows="2">' + esc(v) + '</textarea>';
+    else if (f.type === 'datetime') ctl = '<div class="dt"><input id="' + id + '" data-k="' + f.k + '" type="datetime-local" value="' + esc(v && v.length === 10 ? v + 'T09:00' : v || '') + '"><button class="btn tiny" type="button" data-now="' + f.k + '">Now</button></div>';
+    else ctl = '<input id="' + id + '" data-k="' + f.k + '" type="' + (f.type || 'text') + '"' + (f.type === 'number' ? ' min="0" step="1" inputmode="numeric"' : '') + ' value="' + esc(v == null ? '' : v) + '"' + (f.k === 'id' && editIdx < 0 ? ' placeholder="e.g. ' + esc(nextId()) + '"' : '') + '>';
+    let hint = f.hint ? '<span class="hint" id="h_' + f.k + '">' + esc(f.hint) + '</span>' : '';
+    if (f.k === 'id' && editIdx < 0) hint = '<span class="hint">' + esc(f.hint) + ' · <a href="#" id="useNextId">use ' + esc(nextId()) + '</a></span>';
+    if (f.dyn) hint = '<span class="hint" id="dyn_' + f.dyn + '"></span>';
+    return '<div class="field' + (f.wide ? ' wide' : '') + '" id="w_' + f.k + '"><label for="' + id + '">' + esc(f.label) + reqm + '</label>' + ctl + hint + '<span class="err" hidden></span></div>';
+  }
+  function renderForm() {
+    const c = cfg();
+    let h = FORM.map((s) => {
+      let inner;
+      if (s.custom === 'priority') inner = '<div class="grid">' +
+        fieldHTML({ k: 'impact', label: 'Impact', type: 'select', options: () => c.itil.impact.map((x) => x.level), labels: Object.fromEntries(c.itil.impact.map((x) => [x.level, x.label])), dyn: 'impact' }) +
+        fieldHTML({ k: 'urgency', label: 'Urgency', type: 'select', options: () => c.itil.urgency.map((x) => x.level), labels: Object.fromEntries(c.itil.urgency.map((x) => [x.level, x.label])), dyn: 'urgency' }) +
+        '<div class="wide" id="matrixMini"></div>' +
+        fieldHTML({ k: 'basePriority', label: 'Base priority (when impact × urgency is not set)', type: 'select', options: priNames, dyn: 'base' }) +
+        fieldHTML({ k: 'overridePriority', label: 'Override priority', type: 'select', options: priNames, hint: 'Raise only. Final = higher of base and override.' }) +
+        '<div class="field wide"><span class="lbl">Escalation clauses</span><div class="clause-grid" id="clauseGrid"></div></div></div><div id="verdict"></div>';
+      else if (s.custom === 'sla') inner = '<div class="grid">' +
+        fieldHTML({ k: 'reportedAt', label: 'Reported to Zenoti', type: 'datetime', hint: 'Starts the SLA clocks' }) +
+        fieldHTML({ k: 'acknowledgedAt', label: 'Zenoti first response', type: 'datetime', hint: 'Stops the response clock' }) +
+        fieldHTML({ k: 'planAt', label: 'Action plan committed', type: 'datetime', hint: 'Owner + next action + date given' }) +
+        fieldHTML({ k: 'resolvedAt', label: 'Resolved (fix or workaround delivered)', type: 'datetime', hint: 'Set automatically when status becomes Resolved' }) +
+        fieldHTML({ k: 'attentionLevel', label: 'Current attention level', type: 'select', options: () => c.levels.map((l) => l.id), labels: Object.fromEntries(c.levels.map((l) => [l.id, l.name])), dyn: 'level' }) +
+        fieldHTML({ k: 'closedAt', label: 'Closed', type: 'datetime' }) +
+        '</div><div id="slaPanel"></div>';
+      else if (s.custom === 'activity') inner = '<div class="add-update"><input class="inline-input" type="datetime-local" id="updDate" aria-label="Update date and time"><textarea class="inline-input" id="updText" rows="2" placeholder="What changed: Zenoti reply, fix deployed, blocker, loss figure…" aria-label="Update text"></textarea><button class="btn" type="button" id="btnAddUpd">Add update</button><label><input type="checkbox" id="updAgent"> This is a Zenoti response (sets last Zenoti response; first one also sets first response)</label></div><ul class="log" id="logList"></ul>';
+      else inner = '<div class="grid">' + s.fields.map(fieldHTML).join('') + '</div>';
+      return '<fieldset><legend>' + esc(s.title) + '</legend>' + inner + '</fieldset>';
+    }).join('');
+    if (draft.source) h += '<p class="source">Source: ' + esc(draft.source) + '</p>';
+    $('form').innerHTML = h;
+    $('updDate').value = nowDT();
+    const u = $('useNextId'); if (u) u.addEventListener('click', (e) => { e.preventDefault(); draft.id = nextId(); $('f_id').value = draft.id; });
+    renderTagPicker(); refreshLive(); renderLog();
+  }
+  function refreshLive() { renderClauses(); renderVerdict(); renderMatrixMini(); renderSlaPanel(); renderDyn(); }
+  function renderTagPicker() {
+    const fams = [], byFam = {}, known = {};
+    cfg().tags.forEach((t) => { if (t.family === 'Request type') return; known[t.tag] = t; if (!byFam[t.family]) { byFam[t.family] = []; fams.push(t.family); } byFam[t.family].push(t); });
+    const custom = draft.tags.filter((t) => !known[t]);
+    let h = fams.map((f) => '<div class="tag-family"><div class="fam">' + esc(f) + '</div>' + byFam[f].map((t) => '<button type="button" class="chip-btn' + (f === 'Not in Tagging Matrix' ? ' undef' : '') + '" data-tag="' + esc(t.tag) + '" aria-pressed="' + (draft.tags.indexOf(t.tag) >= 0) + '" title="' + esc(t.use) + '">' + esc(t.tag) + '</button>').join('') + '</div>').join('');
+    h += '<div class="tag-family"><div class="fam">Custom</div>' + custom.map((t) => '<button type="button" class="chip-btn" data-tag="' + esc(t) + '" aria-pressed="true">' + esc(t) + ' ×</button>').join('') + '<input class="inline-input" id="customTag" placeholder="Add tag + Enter" style="min-height:28px;padding:2px 8px;font-size:12px;width:150px" aria-label="Add a custom tag"></div>';
+    const comp = draft.tags.map((t) => (known[t] && known[t].companions ? '<strong>' + esc(t) + '</strong>: ' + esc(known[t].companions) : '')).filter(Boolean);
+    if (comp.length) h += '<div class="companions">Companion tags to check: ' + comp.join(' · ') + '</div>';
+    $('tagPicker').innerHTML = h;
+    $('customTag').addEventListener('keydown', function (e) { if (e.key !== 'Enter') return; e.preventDefault(); const v = this.value.trim().toUpperCase().replace(/\s+/g, '-'); if (v && draft.tags.indexOf(v) < 0) draft.tags.push(v); renderTagPicker(); $('customTag').focus(); });
+  }
+  function renderClauses() {
+    const ev = evaluate(draft), am = {}; ev.auto.forEach((a) => { am[a.id] = a.why; });
+    $('clauseGrid').innerHTML = cfg().clauses.map((c) => {
+      const isAuto = !!am[c.id] && draft.clauses.indexOf(c.id) < 0, checked = draft.clauses.indexOf(c.id) >= 0 || isAuto;
+      return '<label class="clause-opt" title="' + esc(c.condition) + '"><input type="checkbox" data-clause="' + esc(c.id) + '"' + (checked ? ' checked' : '') + (isAuto ? ' disabled' : '') + '><span><strong class="mono">' + esc(c.id) + '</strong> ' + esc(c.trigger) + '<span class="eff">' + esc(c.effect) + '</span>' + (am[c.id] ? '<span class="autow">Automatic: ' + esc(am[c.id]) + '</span>' : '') + '</span></label>';
+    }).join('');
+  }
+  function renderMatrixMini() {
+    const c = cfg().itil, el = $('matrixMini'); if (!el) return;
+    let h = '<div class="matrix-mini"><div class="hd"></div>' + c.urgency.map((u) => '<div class="hd">Urgency ' + esc(u.level) + '</div>').join('');
+    c.impact.forEach((im) => { h += '<div class="hd" style="text-align:right">Impact ' + esc(im.level) + '</div>' + c.urgency.map((u) => { const p = c.matrix[im.level + '|' + u.level], on = draft.impact === im.level && draft.urgency === u.level; return '<div class="pri-' + esc(p) + (on ? ' on' : '') + '">' + esc((priObj(p) || {}).itil) + '</div>'; }).join(''); });
+    el.innerHTML = h + '</div>';
+  }
+  function renderVerdict() {
+    const ev = evaluate(draft), badge = (p) => (p ? priBadge(p) : '<span class="pri pri-none">Not set</span>');
+    const mp = matrixPri(draft);
+    const baseTxt = mp ? 'Base from ITIL matrix: impact ' + draft.impact + ' × urgency ' + draft.urgency : (draft.basePriority ? 'Base from recorded base priority (set impact × urgency to use the ITIL matrix)' : 'Set impact × urgency');
+    const expl = ev.driver ? 'Strongest clause: <span class="mono">' + esc(ev.driver) + '</span>, ' + esc(clauseById(ev.driver).effect) : (ev.ids.length ? 'Selected clauses do not raise the base priority.' : 'No clauses apply.');
+    let h = '<div class="panel' + (ev.below ? ' warn' : '') + '"><div class="row"><strong>Final</strong> ' + badge(ev.final) + '<span class="muted">Rule suggestion</span> ' + badge(ev.sugg) + '</div><div class="muted" style="font-size:12.5px">' + esc(baseTxt) + '. ' + expl + '</div>';
+    if (ev.below) h += '<div class="row"><span>Rules suggest <strong>' + esc(ev.sugg) + '</strong>.</span><button class="btn small" type="button" id="btnApplySugg">Set override to ' + esc(ev.sugg) + '</button></div>';
+    if (ev.escalate.length) h += '<div class="muted" style="font-size:12.5px">Escalate to: ' + esc(Array.from(new Set(ev.escalate)).join(' · ')) + '</div>';
+    $('verdict').innerHTML = h + '</div>';
+    const b = $('btnApplySugg'); if (b) b.addEventListener('click', () => { draft.overridePriority = ev.sugg; $('f_overridePriority').value = ev.sugg; refreshLive(); });
+  }
+  function renderSlaPanel() {
+    const ev = evaluate(draft), el = $('slaPanel'); if (!el) return;
+    const p = priObj(ev.final);
+    if (!p) { el.innerHTML = '<div class="panel muted">Set a priority to start the SLA clocks.</div>'; return; }
+    const lbl = { breached: ['bad', 'Breached'], risk: ['warn', 'At risk'], missed: ['bad', 'Missed'], met: ['ok', 'Met'], ok: ['ok', 'On track'], paused: ['mute', 'Paused'], nostart: ['mute', 'No start time'], na: ['mute', 'n/a'] };
+    const rows = ev.sla.items.map((x) => {
+      const [k, l] = lbl[x.state] || ['mute', x.state];
+      const detail = x.state === 'na' || x.state === 'nostart' ? '' : (x.done ? 'took ' + fmtDur(x.used, ev.sla.clock) : (x.left >= 0 ? fmtDur(x.left, ev.sla.clock) + ' left' : fmtDur(-x.left, ev.sla.clock) + ' over'));
+      return '<tr><td>' + esc(x.label) + '</td><td>' + fmtTarget(x.target, ev.sla.clock) + '</td><td>' + (x.due ? esc(fmtDT(x.due)) : '—') + '</td><td><span class="st st-' + k + '">' + l + '</span> <span class="muted">' + esc(detail) + '</span></td></tr>';
+    }).join('');
+    const holds = (draft.holdPeriods || []).length + (draft.holdSince ? 1 : 0);
+    el.innerHTML = '<div class="panel"><div class="row"><strong>' + esc(p.itil + ' · ' + p.name) + '</strong><span class="muted">' + (ev.sla.clock === '24x7' ? '24×7 clock' : 'Business-hours clock') + ' · updates every ' + fmtTarget(p.sla.updateH, ev.sla.clock) + (holds ? ' · ' + holds + ' hold period' + (holds > 1 ? 's' : '') : '') + '</span></div>' +
+      '<table class="sla-table"><thead><tr><th>Clock</th><th>Target</th><th>Due</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+  }
+  function renderDyn() {
+    const c = cfg(), ev = evaluate(draft);
+    const set = (id, t) => { const e = $('dyn_' + id); if (e) e.textContent = t; };
+    set('status', statusObj(draft.status).description || '');
+    set('itilType', c.requestTypeItil[draft.requestType] ? 'ITIL: ' + c.requestTypeItil[draft.requestType] : '');
+    const im = c.itil.impact.find((x) => x.level === draft.impact), ur = c.itil.urgency.find((x) => x.level === draft.urgency);
+    set('impact', im ? im.description : 'How widely the business is affected');
+    set('urgency', ur ? ur.description : 'How fast the impact grows or a deadline approaches');
+    set('base', matrixPri(draft) ? 'Not used: impact × urgency gives ' + matrixPri(draft) : 'Use the Priority Framework entry criteria');
+    const lv = c.levels.find((l) => l.id === draft.attentionLevel);
+    set('level', (ev.expLevel ? 'Expected for this priority: ' + ev.expLevel + '. ' : '') + (lv ? lv.description : ''));
+    const w = $('dyn_closeWarn');
+    if (w) {
+      const miss = [];
+      if (isClosed(draft)) { if (!draft.closureNotes) miss.push('validation notes'); if (draft.rcaRequired !== 'No' && !draft.preventionOwner) miss.push('recurrence-prevention owner'); }
+      w.style.color = miss.length ? 'var(--warn)' : '';
+      w.textContent = miss.length ? 'Closing without ' + miss.join(' and ') + '. The operating model asks for validation evidence, RCA and a prevention owner before closing.' : 'Outcome validated, data and money reconciled, no recurrence.';
+    }
+  }
+  function renderLog() {
+    const items = draft.log.map((l, i) => ({ l, i })).sort((a, b) => (a.l.at < b.l.at ? 1 : a.l.at > b.l.at ? -1 : b.i - a.i));
+    $('logList').innerHTML = items.length ? items.map(({ l }) => '<li><span class="d">' + esc(fmtDT(l.at) || l.at) + '</span><span class="k ' + (l.type === 'note' ? 'note' : '') + '">' + (l.type === 'note' ? 'Update' : 'Change') + '</span><span>' + esc(l.text) + '</span></li>').join('') : '<li class="muted">No activity yet.</li>';
+  }
+  function onStatusChange(oldS, newS) {
+    const o = statusObj(oldS), n = statusObj(newS), now = nowDT();
+    if (n.pausesSla && !o.pausesSla) draft.holdSince = now;
+    if (!n.pausesSla && o.pausesSla && draft.holdSince) { draft.holdPeriods = (draft.holdPeriods || []).concat([{ from: draft.holdSince, to: now }]); draft.holdSince = ''; }
+    if ((n.category === 'resolved' || n.category === 'closed') && !draft.resolvedAt) draft.resolvedAt = now;
+    if (n.category === 'closed' && !draft.closedAt) draft.closedAt = now;
+    if ((o.category === 'resolved' || o.category === 'closed') && (n.category === 'active' || n.category === 'new' || n.category === 'hold')) { draft.resolvedAt = ''; draft.closedAt = ''; draft.log.push({ at: now, type: 'change', text: 'Reopened' }); }
+    ['resolvedAt', 'closedAt'].forEach((k) => { const e = $('f_' + k); if (e) e.value = draft[k] || ''; });
+  }
+  $('form').addEventListener('input', (e) => {
+    const k = e.target.getAttribute('data-k'); if (!k) return;
+    let v = e.target.value;
+    if (k === 'financialImpact') v = v === '' ? null : Number(v);
+    if (k === 'status') onStatusChange(draft.status, v);
+    draft[k] = v;
+    const w = $('w_' + k); if (w && w.classList.contains('invalid') && String(v || '').trim()) { w.classList.remove('invalid'); w.querySelector('.err').hidden = true; }
+    if (!document.querySelector('.field.invalid')) $('formMsg').textContent = '';
+    if (k === 'id' || k === 'title') $('drawerTitle').textContent = (draft.id || 'New issue') + (draft.title ? ' · ' + draft.title : '');
+    refreshLive();
+  });
+  $('form').addEventListener('change', (e) => {
+    const c = e.target.getAttribute('data-clause'); if (!c) return;
+    const i = draft.clauses.indexOf(c);
+    if (e.target.checked && i < 0) draft.clauses.push(c); else if (!e.target.checked && i >= 0) draft.clauses.splice(i, 1);
+    draft.clauses.sort(); renderVerdict();
+  });
+  $('form').addEventListener('click', (e) => {
+    const t = e.target.closest('[data-tag]');
+    if (t) { const tag = t.getAttribute('data-tag'), i = draft.tags.indexOf(tag); if (i >= 0) draft.tags.splice(i, 1); else draft.tags.push(tag); renderTagPicker(); const again = $('tagPicker').querySelector('[data-tag="' + CSS.escape(tag) + '"]'); if (again) again.focus(); return; }
+    const nb = e.target.closest('[data-now]');
+    if (nb) { const k = nb.getAttribute('data-now'); draft[k] = nowDT(); $('f_' + k).value = draft[k]; refreshLive(); return; }
+    if (e.target.id === 'btnAddUpd') {
+      const txt = $('updText').value.trim(), d = $('updDate').value || nowDT();
+      if (!txt) { $('updText').focus(); return; }
+      draft.log.push({ at: d, type: 'note', text: txt });
+      if (!draft.lastUpdate || d > draft.lastUpdate) { draft.lastUpdate = d; const lu = $('f_lastUpdate'); if (lu) lu.value = d; }
+      if ($('updAgent').checked) {
+        if (!draft.lastAgentResponse || d > draft.lastAgentResponse) { draft.lastAgentResponse = d; const la = $('f_lastAgentResponse'); if (la) la.value = d; }
+        if (!draft.acknowledgedAt) { draft.acknowledgedAt = d; const ak = $('f_acknowledgedAt'); if (ak) ak.value = d; }
+      }
+      $('updText').value = ''; $('updAgent').checked = false; renderLog(); refreshLive();
+    }
+  });
+  $('form').addEventListener('submit', (e) => e.preventDefault());
+  function openIssue(idx) {
+    lastFocus = document.activeElement; editIdx = idx;
+    original = idx >= 0 ? clone(state.data.issues[idx]) : null;
+    draft = idx >= 0 ? clone(state.data.issues[idx]) : blankIssue();
+    if (idx < 0) { draft.reportedAt = nowDT(); draft.status = 'New'; }
+    $('drawerTitle').textContent = idx >= 0 ? draft.id + (draft.title ? ' · ' + draft.title : '') : 'New issue';
+    $('drawerMeta').textContent = idx >= 0 ? 'Created ' + (fmtDate(draft.createdAt) || '—') + ' · last edited ' + (fmtDate(draft.updatedAt) || '—') : 'Intake: fields marked * are required.';
+    $('btnDelete').hidden = idx < 0; deleteArmed = false; $('btnDelete').textContent = 'Delete'; $('formMsg').textContent = '';
+    renderForm();
+    $('scrim').hidden = false; $('drawer').hidden = false; $('form').scrollTop = 0;
+    setTimeout(() => { const f = $(idx >= 0 ? 'f_status' : 'f_id'); if (f) f.focus(); }, 30);
+  }
+  function closeDrawer() { $('scrim').hidden = true; $('drawer').hidden = true; draft = null; editIdx = -1; if (lastFocus && lastFocus.focus) lastFocus.focus(); }
+  $('btnClose').addEventListener('click', closeDrawer); $('btnCancel').addEventListener('click', closeDrawer); $('scrim').addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { if (!$('drawer').hidden) closeDrawer(); else if ($('moreMenu').open) $('moreMenu').open = false; } });
+  function validate() {
+    const bad = [];
+    document.querySelectorAll('.field.invalid').forEach((w) => { w.classList.remove('invalid'); w.querySelector('.err').hidden = true; });
+    const mark = (k, msg) => { const w = $('w_' + k); if (w) { w.classList.add('invalid'); const er = w.querySelector('.err'); er.textContent = msg; er.hidden = false; } bad.push(k); };
+    const closed = isClosed(draft);
+    REQUIRED.forEach((f) => { if (!String(draft[f.k] == null ? '' : draft[f.k]).trim() && !(closed && ['id', 'title', 'status'].indexOf(f.k) < 0)) mark(f.k, 'Required'); });
+    if (!closed && !matrixPri(draft) && !draft.basePriority && !draft.overridePriority) { mark('impact', 'Set impact and urgency'); mark('urgency', 'Set impact and urgency'); }
+    const id = String(draft.id || '').trim();
+    if (id && state.data.issues.some((it, i) => i !== editIdx && it.id.toLowerCase() === id.toLowerCase())) mark('id', 'Another issue already uses this ID');
+    return bad;
+  }
+  const TRACK = { status: 'Status', impact: 'Impact', urgency: 'Urgency', basePriority: 'Base priority', overridePriority: 'Override priority', zenotiOwner: 'Zenoti owner', attentionLevel: 'Attention level', deadline: 'Business deadline', nextActionDue: 'Next action due', requestType: 'Request type', function: 'Primary function' };
+  $('btnSaveIssue').addEventListener('click', () => {
+    draft.id = String(draft.id || '').trim(); draft.title = String(draft.title || '').trim();
+    const bad = validate();
+    if (bad.length) { $('formMsg').textContent = 'Fill in ' + bad.length + ' required field' + (bad.length > 1 ? 's' : '') + '.'; const w = $('w_' + bad[0]); if (w) { w.scrollIntoView({ block: 'center', behavior: 'smooth' }); const c = w.querySelector('input,select,textarea'); if (c) c.focus(); } return; }
+    if (draft.function && draft.tags.indexOf(draft.function) < 0) draft.tags.unshift(draft.function);
+    const now = nowDT(); draft.updatedAt = todayStr(); draft.rev = new Date().toISOString();
+    let label, op;
+    if (editIdx >= 0) {
+      const old = original, changed = [];
+      Object.keys(TRACK).forEach((k) => { if ((old[k] || '') !== (draft[k] || '')) { draft.log.push({ at: now, type: 'change', text: TRACK[k] + ': ' + (old[k] || '—') + ' → ' + (draft[k] || '—') }); changed.push(TRACK[k].toLowerCase()); } });
+      const of = higher(basePri(old), old.overridePriority), nf = higher(basePri(draft), draft.overridePriority);
+      if (of !== nf) draft.log.push({ at: now, type: 'change', text: 'Final priority: ' + (of || '—') + ' → ' + (nf || '—') });
+      if (old.clauses.join(';') !== draft.clauses.join(';')) { draft.log.push({ at: now, type: 'change', text: 'Clauses: ' + (old.clauses.join(', ') || '—') + ' → ' + (draft.clauses.join(', ') || '—') }); changed.push('clauses'); }
+      if (draft.log.length > old.log.length && !changed.length) changed.push('activity');
+      label = 'Update ' + draft.id + (changed.length ? ': ' + changed.slice(0, 4).join(', ') : '');
+      op = { kind: 'upsert', issue: clone(draft), prevId: old.id !== draft.id ? old.id : '', baseRev: old.rev || '', isNew: false, label };
+    } else {
+      draft.createdAt = todayStr(); draft.log.unshift({ at: now, type: 'change', text: 'Created through intake.' });
+      label = 'Add ' + draft.id + ': ' + draft.title.slice(0, 60);
+      op = { kind: 'upsert', issue: clone(draft), baseRev: '', isNew: true, label };
+    }
+    closeDrawer(); queue(op);
+    toast(label + (state.mode === 'github' ? ' · saving to GitHub…' : ' · saved in this browser'));
+  });
+  $('btnDelete').addEventListener('click', function () {
+    if (!deleteArmed) { deleteArmed = true; this.textContent = 'Click again to delete'; setTimeout(() => { deleteArmed = false; this.textContent = 'Delete'; }, 4000); return; }
+    const id = state.data.issues[editIdx].id; closeDrawer(); queue({ kind: 'delete', id, label: 'Delete ' + id }); toast(id + ' deleted.');
+  });
+  $('btnNew').addEventListener('click', () => { setView('issues'); openIssue(-1); });
+
+  /* ---------------- files ---------------- */
+  function download(name, text, type) { const blob = new Blob([text], { type }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); }
+  function saveFile() {
+    const d = clone(state.data); d.meta.exportedAt = new Date().toISOString();
+    download('issues.js', serialize(d), 'text/javascript');
+    if (state.mode === 'local') { state.base = normalize(d); state.pending = []; savePending(); writeJSON(K.local, { data: d, stamp: d.meta.exportedAt }); recompute(); renderAll(); toast('issues.js downloaded. Replace the file in your repository and commit.'); }
+  }
+  $('btnSave').addEventListener('click', saveFile);
+  $('btnDownload').addEventListener('click', () => { $('moreMenu').open = false; const d = clone(state.data); d.meta.exportedAt = new Date().toISOString(); download('issues.js', serialize(d), 'text/javascript'); });
+  $('btnReload').addEventListener('click', async () => { $('moreMenu').open = false; setSync('loading'); try { await loadRemote(); recompute(); setSync(state.mode === 'github' ? (state.pending.length ? 'saving' : 'synced') : 'readonly'); renderAll(); if (state.pending.length) flush(); toast('Reloaded from GitHub.'); } catch (e) { state.syncError = e.message; setSync('error'); } });
+  const csvCell = (v) => { v = v == null ? '' : String(v); return /[",\n;]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+  $('btnCsv').addEventListener('click', () => {
+    $('moreMenu').open = false;
+    const head = ['Issue ID', 'Issue', 'Status', 'Impact', 'Urgency', 'Base priority', 'Override priority', 'Final priority', 'ITIL priority', 'Rule suggestion', 'Request type', 'Primary function', 'Tags', 'Impact summary', 'Financial impact (MXN)', 'Financial period', 'Locations', 'Members affected', 'Workaround', 'Reported to Zenoti', 'First response', 'Action plan', 'Resolved', 'Closed', 'SLA response', 'SLA action plan', 'SLA resolution', 'Attention level', 'Expected level', 'Business deadline', 'Last update', 'Update status', 'Last Zenoti response', 'Clauses', 'Automatic clauses', 'Zenoti owner', 'Next action', 'Next action due', 'Linked records', 'Recommended action', 'Source'];
+    const rows = state.data.issues.map((it) => {
+      const ev = evaluate(it), s = (k) => { const x = ev.sla.items.find((i) => i.k === k); return x ? x.state : ''; };
+      return [it.id, it.title, it.status, it.impact, it.urgency, it.basePriority, it.overridePriority, ev.final, (priObj(ev.final) || {}).itil, ev.sugg, it.requestType, it.function, it.tags.join('; '), it.impactSummary, it.financialImpact, it.financialPeriod, it.locations, it.membersAffected, it.workaround, it.reportedAt, it.acknowledgedAt, it.planAt, it.resolvedAt, it.closedAt, s('ack'), s('plan'), s('resolve'), it.attentionLevel, ev.expLevel, it.deadline, it.lastUpdate, ev.upd.label, it.lastAgentResponse, it.clauses.join('; '), ev.auto.map((a) => a.id).join('; '), it.zenotiOwner, it.nextAction, it.nextActionDue, it.linkedRecords, it.recommendedAction, it.source];
+    });
+    download('zenoti-issues-' + todayStr() + '.csv', '﻿' + [head].concat(rows).map((r) => r.map(csvCell).join(',')).join('\r\n'), 'text/csv;charset=utf-8');
+  });
+  $('btnImport').addEventListener('click', () => { $('moreMenu').open = false; $('fileInput').click(); });
+  $('fileInput').addEventListener('change', function () {
+    const f = this.files[0]; if (!f) return; const input = this, r = new FileReader();
+    r.onload = () => { try { const d = normalize(parseDataText(r.result)); queue({ kind: 'replace', data: d, label: 'Import ' + f.name + ' (' + d.issues.length + ' issues)' }); toast('Imported ' + d.issues.length + ' issues from ' + f.name + '.'); } catch (err) { toast('Could not read ' + f.name + ': ' + err.message); } input.value = ''; };
+    r.readAsText(f);
+  });
+  $('btnDiscard').addEventListener('click', function () {
+    if (!state.pending.length) { $('moreMenu').open = false; toast('No unsaved changes.'); return; }
+    if (this.dataset.armed !== '1') { this.dataset.armed = '1'; this.textContent = 'Click again to discard ' + state.pending.length + ' change(s)'; setTimeout(() => { delete this.dataset.armed; this.textContent = 'Discard unsaved changes'; }, 4000); return; }
+    delete this.dataset.armed; this.textContent = 'Discard unsaved changes'; $('moreMenu').open = false;
+    state.pending = []; state.conflict = null; savePending(); recompute(); renderAll(); toast('Unsaved changes discarded.');
+  });
+  document.addEventListener('click', (e) => { const m = $('moreMenu'); if (m.open && !m.contains(e.target)) m.open = false; });
+
+  function renderAll() { renderChrome(); renderFilters(); renderMetrics(); renderTable(); if (state.view === 'ref') renderRef(); if (state.view === 'settings') renderSettings(); }
+  setInterval(() => { if (state.view === 'issues') { renderMetrics(); renderTable(); } if (draft) { renderSlaPanel(); } }, 60000);
+  window.__tracker = { state, evaluate, bizHours, addBizHours, parseDT };
+  init();
+})();
+</script>
+</body>
+</html>
