@@ -3,9 +3,9 @@ window.ZENOTI_DATA = {
   "meta": {
     "name": "Zenoti Issue Tracker",
     "schema": 2,
-    "exportedAt": "2026-10-22T15:45:00.000Z",
+    "exportedAt": "2026-10-22T18:00:00.000Z",
     "note": "Data file for index.html. The page saves changes to this file through the GitHub API.",
-    "reviewNote": "Oct 22, 2026: entry types (ISSUE / DEV REQUEST / PROJECT) and expected resolution dates added; INC-014 added."
+    "reviewNote": "Oct 22, 2026: REQ-001 (CH-141401), REQ-002 (CH-161311) and PRJ-001 (CH-161586, HSBC) added from the mail review."
   },
   "config": {
     "priorities": [
@@ -1682,6 +1682,287 @@ window.ZENOTI_DATA = {
       "updatedAt": "2026-10-22",
       "rev": "2026-10-22T15:45:00.000Z",
       "category": "ISSUE",
+      "expectedResolution": ""
+    },
+    {
+      "id": "REQ-001",
+      "title": "Campaign discounts: scheduling flexibility (proration options, skipping non-consecutive billing cycles, upfront billing article) (CH-141401)",
+      "period": "Sep 2026",
+      "detectedDate": "2026-09-02",
+      "status": "In progress",
+      "requestType": "ENHANCEMENT",
+      "function": "BILLING",
+      "tags": [
+        "ENHANCEMENT",
+        "BILLING",
+        "MEMBERSHIP",
+        "OPS",
+        "MULTI-LOCATION"
+      ],
+      "impactSummary": "Zenoti campaign discounts cannot be set up the way PF Corporate campaigns are agreed: no proration options, no way to apply a discount to non-consecutive billing cycles, and no upfront-billing article. Zenoti itself rates the impact as \"limiting agreed-upon PF Corporate campaigns; causing front-desk friction\". Campaigns that do not fit must be adjusted by hand at the front desk (for example, the club-50 campaign in September was applied as a manual $50 adjustment).",
+      "financialImpact": null,
+      "financialPeriod": "",
+      "locations": "All clubs (PF Corporate campaigns)",
+      "membersAffected": "",
+      "workaround": "Yes",
+      "basePriority": "",
+      "overridePriority": "",
+      "impact": "High",
+      "urgency": "Medium",
+      "clauses": [],
+      "deadline": "",
+      "reportedAt": "2026-09-02T12:21",
+      "acknowledgedAt": "2026-09-02T12:21",
+      "planAt": "",
+      "resolvedAt": "",
+      "closedAt": "",
+      "holdSince": "",
+      "holdPeriods": [],
+      "lastUpdate": "2026-10-08T10:36",
+      "lastAgentResponse": "2026-10-07T16:03",
+      "recommendedAction": "",
+      "reporter": "FPT Systems (Oscar Herreria) with FPT Marketing (Liz Magdaleno, Karla Gómez)",
+      "zenotiTicket": "CH-141401",
+      "zenotiOwner": "Anurag Singh (Zenoti Product); Lesley Silvestre (Customer Success)",
+      "attentionLevel": "N3",
+      "nextAction": "Ask Zenoti Product (Anurag Singh) for the outcome of the campaign-matrix review: what will be built, in which release, and a delivery date. Then set the expected resolution date.",
+      "nextActionDue": "",
+      "nextReview": "",
+      "closureCriteria": "Every campaign type in the campaign matrix FPT sent on Oct 5 can be configured in Zenoti without manual front-desk adjustments (proration options, non-consecutive cycles, upfront billing), confirmed in a test campaign and documented for the clubs.",
+      "rcaRequired": "",
+      "preventionOwner": "",
+      "evidence": "Outlook thread \"PF Mexico / Zenoti - Requirements Discussion - Campaign Discounts Enhancement (CH-141401)\" (Sep 2 – Oct 7, 2026); PFT-Weekly-Snapshot.pdf (Oct 8, 2026).",
+      "closureNotes": "",
+      "linkedRecords": "Zenoti weekly snapshot Oct 8, 2026 (enhancement requests table); campaign matrix sent Oct 5, 2026; earlier request FPT-195 \"Discount campaign flexibility\" (Jun 2025, marked done by Zenoti on Dec 11, 2025).",
+      "source": "Outlook: CH-141401 requirements thread and the Zenoti weekly snapshot of Oct 8, 2026.",
+      "log": [
+        {
+          "at": "2026-09-02T12:21",
+          "type": "note",
+          "text": "Zenoti (Lesley Silvestre) scheduled the requirements discussion for CH-141401 on Sep 17. FPT (Oscar) rejected the date because an urgent campaign started on Sep 6 and asked to meet on Sep 3; Zenoti moved the call to Sep 3."
+        },
+        {
+          "at": "2026-09-03T10:30",
+          "type": "note",
+          "text": "Requirements call with Zenoti (Lesley Silvestre, Anurag Singh) and FPT Systems and Marketing."
+        },
+        {
+          "at": "2026-09-07T12:00",
+          "type": "note",
+          "text": "Related: the club-50 campaign could not be configured as agreed because of the Zenoti limitation. FPT Systems told Marketing (Liz, Karla) to apply the $50 through a manual adjustment."
+        },
+        {
+          "at": "2026-10-05T10:57",
+          "type": "note",
+          "text": "FPT (Oscar, Karla) sent Zenoti the campaign matrix with the examples Zenoti asked for."
+        },
+        {
+          "at": "2026-10-07T16:03",
+          "type": "note",
+          "text": "Zenoti (Lesley): \"This is exactly what we were looking for.\" Ticket CH-141401 updated for the product team (Anurag Singh)."
+        },
+        {
+          "at": "2026-10-08T10:36",
+          "type": "note",
+          "text": "Zenoti weekly snapshot: CH-141401, priority High, \"Examples received – product team reviewing\", status In Review. No delivery date given."
+        },
+        {
+          "at": "2026-10-22T12:00",
+          "type": "change",
+          "text": "Added at FPT's request from the Oct 22 mail review. Zenoti has given no delivery date, so the expected resolution date is blank; set it once Zenoti commits. Filed as the \"campaign visibility\" dev request: no thread with that exact title was found, and CH-141401 is the open campaign enhancement with Zenoti."
+        }
+      ],
+      "createdAt": "2026-10-22",
+      "updatedAt": "2026-10-22",
+      "rev": "2026-10-22T18:00:00.000Z",
+      "category": "DEV REQUEST",
+      "expectedResolution": ""
+    },
+    {
+      "id": "REQ-002",
+      "title": "Daily Collections By Item report: add an IVA 16% tax column for loyalty-point and gift-card redemptions (CH-161311)",
+      "period": "Jul 2026",
+      "detectedDate": "2026-07-23",
+      "status": "Assigned",
+      "requestType": "ENHANCEMENT",
+      "function": "REPORTING",
+      "tags": [
+        "ENHANCEMENT",
+        "REPORTING",
+        "FINANCIAL",
+        "LAUNCH"
+      ],
+      "impactSummary": "The Daily Collections By Item report has no tax column that breaks out IVA 16% on loyalty-point and gift-card redemptions. Zenoti's own summary: \"Loyalty & gift card launch blocked; coupon campaigns tied to 50th club opening in mid-Sept.\" FPT Accounting uses this daily report for the government-mandated fiscal stamping of member payments, so redemptions cannot be stamped correctly from the report as it is.",
+      "financialImpact": null,
+      "financialPeriod": "",
+      "locations": "All clubs (accounting / fiscal stamping)",
+      "membersAffected": "",
+      "workaround": "",
+      "basePriority": "",
+      "overridePriority": "",
+      "impact": "High",
+      "urgency": "Medium",
+      "clauses": [],
+      "deadline": "",
+      "reportedAt": "2026-07-23T12:00",
+      "acknowledgedAt": "2026-07-29T12:00",
+      "planAt": "",
+      "resolvedAt": "",
+      "closedAt": "",
+      "holdSince": "",
+      "holdPeriods": [],
+      "lastUpdate": "2026-10-08T10:36",
+      "lastAgentResponse": "2026-10-08T10:36",
+      "recommendedAction": "",
+      "reporter": "FPT Systems (Oscar Herreria)",
+      "zenotiTicket": "CH-161311",
+      "zenotiOwner": "Lesley Silvestre (Customer Success); Zenoti Product (scope review)",
+      "attentionLevel": "N3",
+      "nextAction": "Ask Zenoti for the scope-review result and a delivery date for CH-161311. Confirm with Accounting the exact columns needed (IVA 16% base and tax on loyalty-point and gift-card redemptions) and how redemptions are handled today.",
+      "nextActionDue": "",
+      "nextReview": "",
+      "closureCriteria": "The daily Collections By Item report shows IVA 16% for loyalty-point and gift-card redemptions, Accounting reconciles one full month against it, and the loyalty and gift-card launch is unblocked.",
+      "rcaRequired": "",
+      "preventionOwner": "",
+      "evidence": "PFT-Weekly-Snapshot.pdf (Oct 8, 2026): \"CH-161311 Tax Column in Collections By Item Report – Add IVA 16% breakdown for loyalty point & gift card redemptions in reporting\", requestor Oscar Herreria, submitted Jul 23, 2026.",
+      "closureNotes": "",
+      "linkedRecords": "Zenoti weekly snapshot Oct 8, 2026; the same report's delivery gaps (missed daily sends Nov 2025 – Aug 2026); \"Daily Collections 2026 Repository\" request (Oscar, Aug 27, 2026) for a consolidated download of all 2026 instances.",
+      "source": "Outlook: Zenoti weekly snapshot of Oct 8, 2026; \"Daily Collections By Item Report\" threads.",
+      "log": [
+        {
+          "at": "2026-07-23T12:00",
+          "type": "note",
+          "text": "FPT (Oscar) submitted the request for a tax column in the Collections By Item report (IVA 16% on loyalty-point and gift-card redemptions)."
+        },
+        {
+          "at": "2026-07-29T12:00",
+          "type": "note",
+          "text": "FPT's new product requests were reviewed with PF CSC and Zenoti and moved to DEV SIZING."
+        },
+        {
+          "at": "2026-08-27T16:05",
+          "type": "note",
+          "text": "Related: FPT (Oscar) asked Zenoti for a consolidated download of every 2026 instance of the Daily Collections By Item report."
+        },
+        {
+          "at": "2026-10-08T10:36",
+          "type": "note",
+          "text": "Zenoti weekly snapshot: CH-161311, priority High, status Scope Review, no next step or date."
+        },
+        {
+          "at": "2026-10-22T12:00",
+          "type": "change",
+          "text": "Added at FPT's request from the Oct 22 mail review. Zenoti has given no delivery date, so the expected resolution date is blank; set it once Zenoti commits."
+        }
+      ],
+      "createdAt": "2026-10-22",
+      "updatedAt": "2026-10-22",
+      "rev": "2026-10-22T18:00:00.000Z",
+      "category": "DEV REQUEST",
+      "expectedResolution": ""
+    },
+    {
+      "id": "PRJ-001",
+      "title": "HSBC direct-debit (domiciliación) integration: move direct-debit processing from Scotiabank to HSBC (CH-161586)",
+      "period": "Apr 2026",
+      "detectedDate": "2026-04-22",
+      "status": "On hold – waiting on third party",
+      "requestType": "ENHANCEMENT",
+      "function": "INTEGRATION",
+      "tags": [
+        "ENHANCEMENT",
+        "INTEGRATION",
+        "BILLING",
+        "FINANCIAL",
+        "MULTI-LOCATION"
+      ],
+      "impactSummary": "FPT wants Zenoti to run direct-debit collections through HSBC instead of Scotiabank. HSBC sent its technical requirements form in April and is pressing hard to start. Zenoti will not evaluate the integration until its Fiserv migration is fully done (card-present included), sees no clear strategic benefit, and will size effort and cost for the 2027 roadmap; FPT may have to fund it and a separate commercial agreement may be needed. Zenoti lists it as \"No Commitment\".",
+      "financialImpact": null,
+      "financialPeriod": "",
+      "locations": "All clubs (direct-debit collections)",
+      "membersAffected": "",
+      "workaround": "Yes",
+      "basePriority": "",
+      "overridePriority": "",
+      "impact": "High",
+      "urgency": "Medium",
+      "clauses": [],
+      "deadline": "",
+      "reportedAt": "2026-07-23T12:00",
+      "acknowledgedAt": "2026-08-05T12:00",
+      "planAt": "",
+      "resolvedAt": "",
+      "closedAt": "",
+      "holdSince": "",
+      "holdPeriods": [],
+      "lastUpdate": "2026-10-21T12:00",
+      "lastAgentResponse": "2026-10-08T10:36",
+      "recommendedAction": "",
+      "reporter": "FPT Collections (Norberto Barrera)",
+      "zenotiTicket": "CH-161586",
+      "zenotiOwner": "Anupam Kalita (Zenoti); Lesley Silvestre (Customer Success)",
+      "attentionLevel": "N2",
+      "nextAction": "Ask Zenoti (Lesley) for the effort and cost estimate and a target quarter in the 2027 roadmap, and whether it can start before the Fiserv migration closes. Decide whether FPT funds it. Finish the legal review of the HSBC contract and keep HSBC informed.",
+      "nextActionDue": "",
+      "nextReview": "",
+      "closureCriteria": "HSBC direct debit live in Zenoti: implementer and integrator assigned, file layout certified with HSBC, test cycle passed, first production collection reconciled, and Scotiabank members migrated on an agreed plan.",
+      "rcaRequired": "",
+      "preventionOwner": "",
+      "evidence": "Outlook: \"Domiciliación Planet Fitness. HSBC\" (Apr 22 – Aug 14, 2026); PFT-Weekly-Snapshot.pdf (Oct 8, 2026); HSBC contract review thread (Oct 19–21, 2026).",
+      "closureNotes": "",
+      "linkedRecords": "HSBC contract \"Fitness para Todos DOMI - Planet Fitness\" (Ref: PRJ_0003482602); internal IT ticket TKT-000137 \"Solicitud desarrollo Layout HSBC\" (shows VENCIDO); depends on the Fiserv migration; Zenoti weekly snapshot Oct 8, 2026.",
+      "source": "Outlook: \"Re: Domiciliación Planet Fitness. HSBC\" (Lesley Silvestre, Aug 6, 2026) and related threads.",
+      "log": [
+        {
+          "at": "2026-04-22T12:00",
+          "type": "note",
+          "text": "HSBC (Facundo Gerde, GPS) sent FPT the technical requirements form to start \"Domiciliación Planet Fitness\" and asked FPT to assign the implementer and integrator. Aimée León (FPT) and Hugo Cruz (HSBC) copied."
+        },
+        {
+          "at": "2026-07-23T12:00",
+          "type": "note",
+          "text": "FPT Collections (Norberto) forwarded the HSBC form to Zenoti (Anupam Kalita), copying Aimée and Oscar."
+        },
+        {
+          "at": "2026-07-29T12:00",
+          "type": "note",
+          "text": "FPT's new product requests were reviewed with PF CSC (Eric Darbe) and Zenoti and moved to DEV SIZING."
+        },
+        {
+          "at": "2026-08-05T12:00",
+          "type": "note",
+          "text": "Norberto followed up. Zenoti (Anupam) filled in the high-level information and said an extra commercial agreement may be needed (Lesley working on it)."
+        },
+        {
+          "at": "2026-08-06T12:00",
+          "type": "note",
+          "text": "Zenoti (Lesley): no evaluation until the Fiserv migration is fully complete, card-present included; no clear strategic benefit for Zenoti; effort and cost to be assessed for the 2027 roadmap; FPT may need to fund it."
+        },
+        {
+          "at": "2026-08-14T12:00",
+          "type": "note",
+          "text": "Alejandro Del Conde forwarded HSBC's follow-up (Fernanda Amezcua): HSBC is asking for this very insistently."
+        },
+        {
+          "at": "2026-10-08T10:36",
+          "type": "note",
+          "text": "Zenoti weekly snapshot: CH-161586 \"Direct Debit Processor Migration – Scotia to HSBC\", priority High, \"Awaiting full Fiserv integration\", No Commitment."
+        },
+        {
+          "at": "2026-10-19T12:00",
+          "type": "note",
+          "text": "Legal review of the HSBC adhesion contract \"Fitness para Todos DOMI - Planet Fitness\" (Ref: PRJ_0003482602) under way (Roberto Sacasa, Alejandro Del Conde); still open on Oct 21."
+        },
+        {
+          "at": "2026-10-22T12:00",
+          "type": "change",
+          "text": "Added at FPT's request from the Oct 22 mail review. Zenoti has given no delivery date, so the expected resolution date is blank; set it once Zenoti commits."
+        }
+      ],
+      "createdAt": "2026-10-22",
+      "updatedAt": "2026-10-22",
+      "rev": "2026-10-22T18:00:00.000Z",
+      "category": "PROJECT",
       "expectedResolution": ""
     }
   ]
