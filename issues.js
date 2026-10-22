@@ -3,7 +3,7 @@ window.ZENOTI_DATA = {
   "meta": {
     "name": "Zenoti Issue Tracker",
     "schema": 2,
-    "exportedAt": "2026-10-22T16:29:49.813Z",
+    "exportedAt": "2026-10-22T16:31:26.869Z",
     "note": "Data file for index.html. The page saves changes to this file through the GitHub API.",
     "reviewNote": "Oct 22, 2026: REQ-001 (CH-141401), REQ-002 (CH-161311) and PRJ-001 (CH-161586, HSBC) added from the mail review."
   },
@@ -1534,7 +1534,11 @@ window.ZENOTI_DATA = {
         "BILLING",
         "DATA-INTEGRITY",
         "MEMBER-IMPACT",
-        "FINANCIAL"
+        "FINANCIAL",
+        "REGRESSION",
+        "STALE",
+        "NO-WORKAROUND",
+        "AGEING"
       ],
       "impactSummary": "PF Canek: annual maintenance fees were not assigned, so they cannot be charged (16 records tied to the GWP offer according to Zenoti; the club reported a list of about 258). Separately, 13 members reported card charges being reversed (dues, maintenance fees, products). The full scope and financial impact are unknown, and members keep asking. The 343 inactive memberships were already fixed.",
       "financialImpact": null,
@@ -1542,17 +1546,20 @@ window.ZENOTI_DATA = {
       "locations": "PF Canek (Yucatán)",
       "membersAffected": "16 fee records (club list: ~258); 13 reversed-charge reports",
       "workaround": "No",
-      "basePriority": "",
+      "basePriority": "Important",
       "overridePriority": "Prioritary",
       "impact": "Medium",
       "urgency": "High",
       "clauses": [
+        "E04",
+        "E06",
         "E10",
-        "E11"
+        "E11",
+        "E15"
       ],
       "deadline": "",
-      "reportedAt": "",
-      "acknowledgedAt": "",
+      "reportedAt": "2026-08-25T10:30",
+      "acknowledgedAt": "2026-08-27T10:31",
       "planAt": "",
       "resolvedAt": "",
       "closedAt": "",
@@ -1564,7 +1571,7 @@ window.ZENOTI_DATA = {
       "reporter": "",
       "zenotiTicket": "215475731342074 (reversed charges)",
       "zenotiOwner": "Zenoti Support + DB team; Zenoti Payments (reversed charges)",
-      "attentionLevel": "N2",
+      "attentionLevel": "N3",
       "nextAction": "Zenoti DB team to assign the pending annual fees and list the affected records; Zenoti Payments to explain the reversals and size the impact",
       "nextActionDue": "",
       "nextReview": "",
@@ -1620,11 +1627,26 @@ window.ZENOTI_DATA = {
           "at": "2026-10-22T10:29",
           "type": "change",
           "text": "Expected resolution: — → 2026-10-06"
+        },
+        {
+          "at": "2026-10-22T10:31",
+          "type": "change",
+          "text": "Base priority: — → Important"
+        },
+        {
+          "at": "2026-10-22T10:31",
+          "type": "change",
+          "text": "Attention level: N2 → N3"
+        },
+        {
+          "at": "2026-10-22T10:31",
+          "type": "change",
+          "text": "Clauses: E10, E11 → E04, E06, E10, E11, E15"
         }
       ],
       "createdAt": "2026-10-21",
       "updatedAt": "2026-10-22",
-      "rev": "2026-10-22T16:29:49.232Z"
+      "rev": "2026-10-22T16:31:26.184Z"
     },
     {
       "id": "INC-014",
