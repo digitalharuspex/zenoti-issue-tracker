@@ -3,7 +3,7 @@ window.ZENOTI_DATA = {
   "meta": {
     "name": "Zenoti Issue Tracker",
     "schema": 2,
-    "exportedAt": "2026-10-22T16:29:28.180Z",
+    "exportedAt": "2026-10-22T16:29:49.813Z",
     "note": "Data file for index.html. The page saves changes to this file through the GitHub API.",
     "reviewNote": "Oct 22, 2026: REQ-001 (CH-141401), REQ-002 (CH-161311) and PRJ-001 (CH-161586, HSBC) added from the mail review."
   },
@@ -1525,8 +1525,8 @@ window.ZENOTI_DATA = {
       "category": "ISSUE",
       "title": "Canek: annual fees not assigned and member charges reversed (Zenoti DB changes)",
       "period": "Oct 2026",
-      "detectedDate": "",
-      "expectedResolution": "",
+      "detectedDate": "2026-09-01",
+      "expectedResolution": "2026-10-06",
       "status": "In progress",
       "requestType": "INCIDENT",
       "function": "BILLING",
@@ -1615,11 +1615,16 @@ window.ZENOTI_DATA = {
           "at": "2026-10-21T16:49",
           "type": "change",
           "text": "Final priority: Urgent → Prioritary"
+        },
+        {
+          "at": "2026-10-22T10:29",
+          "type": "change",
+          "text": "Expected resolution: — → 2026-10-06"
         }
       ],
       "createdAt": "2026-10-21",
-      "updatedAt": "2026-10-21",
-      "rev": ""
+      "updatedAt": "2026-10-22",
+      "rev": "2026-10-22T16:29:49.232Z"
     },
     {
       "id": "INC-014",
