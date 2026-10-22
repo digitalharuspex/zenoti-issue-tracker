@@ -3,7 +3,7 @@ window.ZENOTI_DATA = {
   "meta": {
     "name": "Zenoti Issue Tracker",
     "schema": 2,
-    "exportedAt": "2026-10-22T16:25:32.951Z",
+    "exportedAt": "2026-10-22T16:27:07.516Z",
     "note": "Data file for index.html. The page saves changes to this file through the GitHub API.",
     "reviewNote": "Oct 22, 2026: REQ-001 (CH-141401), REQ-002 (CH-161311) and PRJ-001 (CH-161586, HSBC) added from the mail review."
   },
@@ -1512,8 +1512,8 @@ window.ZENOTI_DATA = {
         }
       ],
       "createdAt": "2026-10-21",
-      "updatedAt": "2026-10-21",
-      "rev": ""
+      "updatedAt": "2026-10-22",
+      "rev": "2026-10-22T16:27:06.745Z"
     },
     {
       "id": "INC-013",
