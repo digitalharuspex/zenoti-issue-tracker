@@ -3,9 +3,9 @@ window.ZENOTI_DATA = {
   "meta": {
     "name": "Zenoti Issue Tracker",
     "schema": 2,
-    "exportedAt": "2026-10-21T22:55:00.000Z",
+    "exportedAt": "2026-10-22T15:45:00.000Z",
     "note": "Data file for index.html. The page saves changes to this file through the GitHub API.",
-    "reviewNote": "Oct 21, 2026: ongoing issues confirmed by FPT (INC-007 to INC-013)."
+    "reviewNote": "Oct 22, 2026: entry types (ISSUE / DEV REQUEST / PROJECT) and expected resolution dates added; INC-014 added."
   },
   "config": {
     "priorities": [
@@ -919,7 +919,30 @@ window.ZENOTI_DATA = {
           "name": "Navidad"
         }
       ]
-    }
+    },
+    "categories": [
+      {
+        "id": "ISSUE",
+        "label": "Issue",
+        "prefix": "INC",
+        "resolutionSla": true,
+        "description": "Something in Zenoti is broken, wrong or down: incidents, defects, data corrections. Full ITIL priority and SLA clocks."
+      },
+      {
+        "id": "DEV REQUEST",
+        "label": "Dev request",
+        "prefix": "REQ",
+        "resolutionSla": false,
+        "description": "Something Zenoti must build, change or configure: a feature, report, filter, template or custom set-up. Response and action-plan clocks run; delivery is measured against the expected resolution date."
+      },
+      {
+        "id": "PROJECT",
+        "label": "Project",
+        "prefix": "PRJ",
+        "resolutionSla": false,
+        "description": "A multi-step initiative with phases and several owners: migrations, new-club launches, integrations. Measured against the expected resolution date."
+      }
+    ]
   },
   "issues": [
     {
@@ -1010,7 +1033,9 @@ window.ZENOTI_DATA = {
       "holdPeriods": [],
       "attentionLevel": "N3",
       "linkedRecords": "INC-009 (Scotiabank collection variance); weekly \"PF Mexico / Zenoti - Weekly Fiserv Updates\" call",
-      "rev": ""
+      "rev": "",
+      "category": "ISSUE",
+      "expectedResolution": ""
     },
     {
       "id": "INC-008",
@@ -1109,7 +1134,9 @@ window.ZENOTI_DATA = {
       "holdPeriods": [],
       "attentionLevel": "N2",
       "linkedRecords": "",
-      "rev": ""
+      "rev": "",
+      "category": "ISSUE",
+      "expectedResolution": ""
     },
     {
       "id": "INC-009",
@@ -1198,7 +1225,9 @@ window.ZENOTI_DATA = {
       ],
       "createdAt": "2026-10-21",
       "updatedAt": "2026-10-21",
-      "rev": ""
+      "rev": "",
+      "category": "ISSUE",
+      "expectedResolution": ""
     },
     {
       "id": "INC-010",
@@ -1311,7 +1340,9 @@ window.ZENOTI_DATA = {
       ],
       "createdAt": "2026-10-21",
       "updatedAt": "2026-10-21",
-      "rev": ""
+      "rev": "",
+      "category": "ISSUE",
+      "expectedResolution": ""
     },
     {
       "id": "INC-011",
@@ -1385,7 +1416,9 @@ window.ZENOTI_DATA = {
       ],
       "createdAt": "2026-10-21",
       "updatedAt": "2026-10-21",
-      "rev": ""
+      "rev": "",
+      "category": "ISSUE",
+      "expectedResolution": ""
     },
     {
       "id": "INC-012",
@@ -1478,7 +1511,9 @@ window.ZENOTI_DATA = {
       ],
       "createdAt": "2026-10-21",
       "updatedAt": "2026-10-21",
-      "rev": ""
+      "rev": "",
+      "category": "ISSUE",
+      "expectedResolution": ""
     },
     {
       "id": "INC-013",
@@ -1577,7 +1612,77 @@ window.ZENOTI_DATA = {
       ],
       "createdAt": "2026-10-21",
       "updatedAt": "2026-10-21",
-      "rev": ""
+      "rev": "",
+      "category": "ISSUE",
+      "expectedResolution": ""
+    },
+    {
+      "id": "INC-014",
+      "title": "Plan upgrades/downgrades: unannounced contract step, residual invoices closed by hand, next-day invoices",
+      "period": "Sep 2026",
+      "detectedDate": "2026-09-08",
+      "status": "New",
+      "requestType": "INCIDENT",
+      "function": "MEMBERSHIP",
+      "tags": [
+        "MEMBERSHIP",
+        "BILLING",
+        "OPS",
+        "MEMBER-IMPACT"
+      ],
+      "impactSummary": "PF Villa Verde reports that changing a member's plan now also requires signing a new contract, which Zenoti never announced; without it the change does not activate and the membership stays paused. After the change Zenoti creates a 6–30 MXN difference invoice that discounts itself to zero but must be closed by hand, or it stays in open payments and blocks the plan again. The invoice is no longer generated right away, so staff wait until the next day to close it. The club's earlier fix (chargebacks for the months not billed) now also triggers the month's charge, adding collection errors.",
+      "financialImpact": null,
+      "financialPeriod": "per day",
+      "locations": "PF Villa Verde (reported). Other clubs not yet checked.",
+      "membersAffected": "",
+      "workaround": "Yes",
+      "basePriority": "",
+      "overridePriority": "",
+      "impact": "Medium",
+      "urgency": "Medium",
+      "clauses": [],
+      "deadline": "",
+      "reportedAt": "",
+      "acknowledgedAt": "",
+      "planAt": "",
+      "resolvedAt": "",
+      "closedAt": "",
+      "holdSince": "",
+      "holdPeriods": [],
+      "lastUpdate": "2026-09-08T11:50",
+      "lastAgentResponse": "",
+      "recommendedAction": "",
+      "reporter": "PF Villa Verde (Vladimir Marcel, club manager)",
+      "zenotiTicket": "",
+      "zenotiOwner": "",
+      "attentionLevel": "",
+      "nextAction": "Check whether other clubs see the same plan-change behavior, then report it to Zenoti with examples and ask for the current procedure and training",
+      "nextActionDue": "",
+      "nextReview": "",
+      "closureCriteria": "Zenoti documents the current plan-change procedure; plan changes activate without manual invoice closing or next-day waits; the chargeback interaction is explained; clubs are trained.",
+      "rcaRequired": "",
+      "preventionOwner": "",
+      "evidence": "Email \"Inconsistencias en cobranza al realizar cambios de plan\", PF Villa Verde to Oscar Herreria, Salvador Mora and Norberto Barrera, Sep 8, 2026 (7 photos attached).",
+      "closureNotes": "",
+      "linkedRecords": "Zenoti issue history workbook (Oct 21, 2026), row 19",
+      "source": "Outlook: \"Inconsistencias en cobranza al realizar cambios de plan\" (Sep 8, 2026). No report to Zenoti found in the mail reviewed.",
+      "log": [
+        {
+          "at": "2026-09-08T11:50",
+          "type": "note",
+          "text": "PF Villa Verde reported the plan-change inconsistencies to FPT Systems and Collections and asked for the correct procedure and training."
+        },
+        {
+          "at": "2026-10-22T09:45",
+          "type": "change",
+          "text": "Added at FPT's request after the Oct 21 mail review. Not yet reported to Zenoti as far as the mail shows; set \"Reported to Zenoti\" to start the SLA clocks."
+        }
+      ],
+      "createdAt": "2026-10-22",
+      "updatedAt": "2026-10-22",
+      "rev": "2026-10-22T15:45:00.000Z",
+      "category": "ISSUE",
+      "expectedResolution": ""
     }
   ]
 };

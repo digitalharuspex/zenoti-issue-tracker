@@ -44,13 +44,25 @@ The token is stored only in that browser's localStorage and is never written to 
 
 ## 4. Everyday use
 
-- **+ New issue** opens the intake. Set **Impact** and **Urgency** to get the ITIL priority, and **Reported to Zenoti** to start the SLA clocks.
+- **+ New entry** opens the intake. Choose the **Type** first (ISSUE, DEV REQUEST or PROJECT); the suggested ID follows it (INC-, REQ-, PRJ-). Set **Impact** and **Urgency** to get the ITIL priority, **Reported to Zenoti** to start the SLA clocks, and **Expected resolution date** for the date you expect it solved or delivered.
+- The **Expected resolution** column shows the date, the days left or overdue, and how many times the date moved. Every change to it is written to the activity log. The **Past expected resolution** and **No expected date** tiles and flags find the ones to chase.
+- Filter by type with the **Any type** menu or the **Ongoing by type** tile.
 - Click a row to update it. Use **Activity log → Add update** for each substantive update. Tick *This is a Zenoti response* to also record the vendor's reply time.
-- Each **Save issue** becomes one commit, such as `Update INC-010: status (via tracker)`. The commit history is your audit trail.
-- If someone else saved the same issue after you opened it, the page asks whether to keep your version or theirs. Other issues merge automatically.
-- **More → Export CSV** exports everything, with the computed SLA columns, for Excel.
+- Each **Save** becomes one commit, such as `Update INC-010: status (via tracker)`. The commit history is your audit trail.
+- If someone else saved the same entry after you opened it, the page asks whether to keep your version or theirs. Other entries merge automatically.
+- **More → Export CSV** exports everything, with the type, expected-resolution and computed SLA columns, for Excel.
 
 ## 5. How the rules work
+
+**Entry types**
+
+| Type | Use for | ID prefix | Resolution SLA |
+|---|---|---|---|
+| ISSUE | Something in Zenoti is broken, wrong or down: incidents, defects, data corrections | INC | On |
+| DEV REQUEST | Something Zenoti must build, change or configure: a feature, report, filter, template or custom set-up | REQ | Off: measured against the expected resolution date |
+| PROJECT | A multi-step initiative: migrations, new-club launches, integrations | PRJ | Off: measured against the expected resolution date |
+
+Response, action-plan and update clocks run for every type. Change the prefixes, descriptions and resolution SLA per type in **Settings → Entry types**.
 
 **ITIL priority (impact × urgency)**
 
