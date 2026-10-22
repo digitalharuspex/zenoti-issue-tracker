@@ -3,7 +3,7 @@ window.ZENOTI_DATA = {
   "meta": {
     "name": "Zenoti Issue Tracker",
     "schema": 2,
-    "exportedAt": "2026-10-22T16:31:26.869Z",
+    "exportedAt": "2026-10-22T16:47:04.818Z",
     "note": "Data file for index.html. The page saves changes to this file through the GitHub API.",
     "reviewNote": "Oct 22, 2026: REQ-001 (CH-141401), REQ-002 (CH-161311) and PRJ-001 (CH-161586, HSBC) added from the mail review."
   },
@@ -1356,7 +1356,7 @@ window.ZENOTI_DATA = {
       "period": "Oct 2026",
       "detectedDate": "",
       "expectedResolution": "",
-      "status": "Assigned",
+      "status": "Closed",
       "requestType": "INQUIRY",
       "function": "INTEGRATION",
       "tags": [
@@ -1378,8 +1378,8 @@ window.ZENOTI_DATA = {
       "reportedAt": "2026-10-21T10:48",
       "acknowledgedAt": "2026-10-21T12:02",
       "planAt": "",
-      "resolvedAt": "",
-      "closedAt": "",
+      "resolvedAt": "2026-10-22T10:47",
+      "closedAt": "2026-10-22T10:47",
       "holdSince": "",
       "holdPeriods": [],
       "lastUpdate": "2026-10-21T12:02",
@@ -1419,11 +1419,16 @@ window.ZENOTI_DATA = {
           "at": "2026-10-21T16:45",
           "type": "change",
           "text": "Confirmed ongoing by FPT Software Administration (Oct 21 review)."
+        },
+        {
+          "at": "2026-10-22T10:47",
+          "type": "change",
+          "text": "Status: Assigned → Closed"
         }
       ],
       "createdAt": "2026-10-21",
-      "updatedAt": "2026-10-21",
-      "rev": ""
+      "updatedAt": "2026-10-22",
+      "rev": "2026-10-22T16:47:04.106Z"
     },
     {
       "id": "INC-012",
