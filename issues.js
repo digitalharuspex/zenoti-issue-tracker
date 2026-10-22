@@ -3,7 +3,7 @@ window.ZENOTI_DATA = {
   "meta": {
     "name": "Zenoti Issue Tracker",
     "schema": 2,
-    "exportedAt": "2026-10-22T16:47:04.818Z",
+    "exportedAt": "2026-10-22T17:54:05.900Z",
     "note": "Data file for index.html. The page saves changes to this file through the GitHub API.",
     "reviewNote": "Oct 22, 2026: REQ-001 (CH-141401), REQ-002 (CH-161311) and PRJ-001 (CH-161586, HSBC) added from the mail review."
   },
@@ -1676,7 +1676,7 @@ window.ZENOTI_DATA = {
       "membersAffected": "",
       "workaround": "Yes",
       "basePriority": "Relevant",
-      "overridePriority": "",
+      "overridePriority": "Relevant",
       "impact": "Low",
       "urgency": "Low",
       "clauses": [],
@@ -1735,11 +1735,21 @@ window.ZENOTI_DATA = {
           "at": "2026-10-22T10:25",
           "type": "change",
           "text": "Final priority: Important → Preferable"
+        },
+        {
+          "at": "2026-10-22T11:54",
+          "type": "change",
+          "text": "Override priority: — → Relevant"
+        },
+        {
+          "at": "2026-10-22T11:54",
+          "type": "change",
+          "text": "Final priority: Preferable → Relevant"
         }
       ],
       "createdAt": "2026-10-22",
       "updatedAt": "2026-10-22",
-      "rev": "2026-10-22T16:25:32.259Z"
+      "rev": "2026-10-22T17:54:05.210Z"
     },
     {
       "id": "REQ-001",
