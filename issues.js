@@ -3,7 +3,7 @@ window.ZENOTI_DATA = {
   "meta": {
     "name": "Zenoti Issue Tracker",
     "schema": 2,
-    "exportedAt": "2026-10-22T18:00:00.000Z",
+    "exportedAt": "2026-10-22T16:25:32.951Z",
     "note": "Data file for index.html. The page saves changes to this file through the GitHub API.",
     "reviewNote": "Oct 22, 2026: REQ-001 (CH-141401), REQ-002 (CH-161311) and PRJ-001 (CH-161586, HSBC) added from the mail review."
   },
@@ -947,9 +947,11 @@ window.ZENOTI_DATA = {
   "issues": [
     {
       "id": "INC-007",
+      "category": "ISSUE",
       "title": "Fiserv Migration Issues",
       "period": "Jul-Aug 2026",
       "detectedDate": "",
+      "expectedResolution": "",
       "status": "In progress",
       "requestType": "INCIDENT",
       "function": "INTEGRATION",
@@ -968,17 +970,27 @@ window.ZENOTI_DATA = {
       "workaround": "",
       "basePriority": "Urgent",
       "overridePriority": "Urgent",
+      "impact": "High",
+      "urgency": "Medium",
       "clauses": [
         "E03",
         "E04"
       ],
       "deadline": "",
+      "reportedAt": "",
+      "acknowledgedAt": "",
+      "planAt": "",
+      "resolvedAt": "",
+      "closedAt": "",
+      "holdSince": "",
+      "holdPeriods": [],
       "lastUpdate": "2026-10-19T10:51",
       "lastAgentResponse": "",
       "recommendedAction": "Joint Zenoti/Fiserv recovery plan with owners and dates",
       "reporter": "",
       "zenotiTicket": "",
       "zenotiOwner": "Zenoti Payments (Fiserv integration team)",
+      "attentionLevel": "N3",
       "nextAction": "Agree a stabilization plan for migrated clubs and a date for migrating the remaining clubs",
       "nextActionDue": "",
       "nextReview": "",
@@ -987,6 +999,7 @@ window.ZENOTI_DATA = {
       "preventionOwner": "",
       "evidence": "",
       "closureNotes": "",
+      "linkedRecords": "INC-009 (Scotiabank collection variance); weekly \"PF Mexico / Zenoti - Weekly Fiserv Updates\" call",
       "source": "Issue Register, Zenoti_Future_Prioritization.xlsx",
       "log": [
         {
@@ -1022,26 +1035,15 @@ window.ZENOTI_DATA = {
       ],
       "createdAt": "2026-10-21",
       "updatedAt": "2026-10-21",
-      "impact": "High",
-      "urgency": "Medium",
-      "reportedAt": "",
-      "acknowledgedAt": "",
-      "planAt": "",
-      "resolvedAt": "",
-      "closedAt": "",
-      "holdSince": "",
-      "holdPeriods": [],
-      "attentionLevel": "N3",
-      "linkedRecords": "INC-009 (Scotiabank collection variance); weekly \"PF Mexico / Zenoti - Weekly Fiserv Updates\" call",
-      "rev": "",
-      "category": "ISSUE",
-      "expectedResolution": ""
+      "rev": ""
     },
     {
       "id": "INC-008",
+      "category": "ISSUE",
       "title": "BDD Export Failure",
       "period": "Aug-Oct 2026",
       "detectedDate": "",
+      "expectedResolution": "",
       "status": "In progress",
       "requestType": "INCIDENT",
       "function": "REPORTING",
@@ -1059,17 +1061,27 @@ window.ZENOTI_DATA = {
       "workaround": "",
       "basePriority": "Important",
       "overridePriority": "Urgent",
+      "impact": "Medium",
+      "urgency": "Medium",
       "clauses": [
         "E04",
         "E15"
       ],
       "deadline": "",
+      "reportedAt": "",
+      "acknowledgedAt": "",
+      "planAt": "",
+      "resolvedAt": "",
+      "closedAt": "",
+      "holdSince": "",
+      "holdPeriods": [],
       "lastUpdate": "2026-10-21T09:29",
       "lastAgentResponse": "2026-10-21T04:23",
       "recommendedAction": "Escalate stale issue and set restoration ETA",
       "reporter": "",
       "zenotiTicket": "",
       "zenotiOwner": "Zenoti Support (Intercom)",
+      "attentionLevel": "N2",
       "nextAction": "Zenoti support to reproduce with the export link sent Oct 21 and confirm the fix",
       "nextActionDue": "",
       "nextReview": "",
@@ -1078,6 +1090,7 @@ window.ZENOTI_DATA = {
       "preventionOwner": "",
       "evidence": "",
       "closureNotes": "",
+      "linkedRecords": "",
       "source": "Issue Register, Zenoti_Future_Prioritization.xlsx",
       "log": [
         {
@@ -1123,26 +1136,15 @@ window.ZENOTI_DATA = {
       ],
       "createdAt": "2026-10-21",
       "updatedAt": "2026-10-21",
-      "impact": "Medium",
-      "urgency": "Medium",
-      "reportedAt": "",
-      "acknowledgedAt": "",
-      "planAt": "",
-      "resolvedAt": "",
-      "closedAt": "",
-      "holdSince": "",
-      "holdPeriods": [],
-      "attentionLevel": "N2",
-      "linkedRecords": "",
-      "rev": "",
-      "category": "ISSUE",
-      "expectedResolution": ""
+      "rev": ""
     },
     {
       "id": "INC-009",
+      "category": "ISSUE",
       "title": "Scotiabank collection variance (hard-decline routing)",
       "period": "Aug–Oct 2026",
       "detectedDate": "",
+      "expectedResolution": "",
       "status": "In progress",
       "requestType": "INCIDENT",
       "function": "BILLING",
@@ -1225,15 +1227,15 @@ window.ZENOTI_DATA = {
       ],
       "createdAt": "2026-10-21",
       "updatedAt": "2026-10-21",
-      "rev": "",
-      "category": "ISSUE",
-      "expectedResolution": ""
+      "rev": ""
     },
     {
       "id": "INC-010",
+      "category": "ISSUE",
       "title": "Purple Ticket ($50) discount not applied",
       "period": "Oct 2026",
       "detectedDate": "",
+      "expectedResolution": "",
       "status": "In progress",
       "requestType": "CORRECTION",
       "function": "BILLING",
@@ -1340,15 +1342,15 @@ window.ZENOTI_DATA = {
       ],
       "createdAt": "2026-10-21",
       "updatedAt": "2026-10-21",
-      "rev": "",
-      "category": "ISSUE",
-      "expectedResolution": ""
+      "rev": ""
     },
     {
       "id": "INC-011",
+      "category": "ISSUE",
       "title": "PHP vulnerability: Zenoti exposure inquiry",
       "period": "Oct 2026",
       "detectedDate": "",
+      "expectedResolution": "",
       "status": "Assigned",
       "requestType": "INQUIRY",
       "function": "INTEGRATION",
@@ -1416,15 +1418,15 @@ window.ZENOTI_DATA = {
       ],
       "createdAt": "2026-10-21",
       "updatedAt": "2026-10-21",
-      "rev": "",
-      "category": "ISSUE",
-      "expectedResolution": ""
+      "rev": ""
     },
     {
       "id": "INC-012",
+      "category": "ISSUE",
       "title": "GTM containers missing on new-location membership pages",
       "period": "Oct 2026",
       "detectedDate": "",
+      "expectedResolution": "",
       "status": "In progress",
       "requestType": "CORRECTION",
       "function": "NEW-LOCATION",
@@ -1511,15 +1513,15 @@ window.ZENOTI_DATA = {
       ],
       "createdAt": "2026-10-21",
       "updatedAt": "2026-10-21",
-      "rev": "",
-      "category": "ISSUE",
-      "expectedResolution": ""
+      "rev": ""
     },
     {
       "id": "INC-013",
+      "category": "ISSUE",
       "title": "Canek: annual fees not assigned and member charges reversed (Zenoti DB changes)",
       "period": "Oct 2026",
       "detectedDate": "",
+      "expectedResolution": "",
       "status": "In progress",
       "requestType": "INCIDENT",
       "function": "BILLING",
@@ -1612,15 +1614,15 @@ window.ZENOTI_DATA = {
       ],
       "createdAt": "2026-10-21",
       "updatedAt": "2026-10-21",
-      "rev": "",
-      "category": "ISSUE",
-      "expectedResolution": ""
+      "rev": ""
     },
     {
       "id": "INC-014",
+      "category": "ISSUE",
       "title": "Plan upgrades/downgrades: unannounced contract step, residual invoices closed by hand, next-day invoices",
       "period": "Sep 2026",
       "detectedDate": "2026-09-08",
+      "expectedResolution": "",
       "status": "New",
       "requestType": "INCIDENT",
       "function": "MEMBERSHIP",
@@ -1636,10 +1638,10 @@ window.ZENOTI_DATA = {
       "locations": "PF Villa Verde (reported). Other clubs not yet checked.",
       "membersAffected": "",
       "workaround": "Yes",
-      "basePriority": "",
+      "basePriority": "Relevant",
       "overridePriority": "",
-      "impact": "Medium",
-      "urgency": "Medium",
+      "impact": "Low",
+      "urgency": "Low",
       "clauses": [],
       "deadline": "",
       "reportedAt": "",
@@ -1676,19 +1678,39 @@ window.ZENOTI_DATA = {
           "at": "2026-10-22T09:45",
           "type": "change",
           "text": "Added at FPT's request after the Oct 21 mail review. Not yet reported to Zenoti as far as the mail shows; set \"Reported to Zenoti\" to start the SLA clocks."
+        },
+        {
+          "at": "2026-10-22T10:25",
+          "type": "change",
+          "text": "Impact: Medium → Low"
+        },
+        {
+          "at": "2026-10-22T10:25",
+          "type": "change",
+          "text": "Urgency: Medium → Low"
+        },
+        {
+          "at": "2026-10-22T10:25",
+          "type": "change",
+          "text": "Base priority: — → Relevant"
+        },
+        {
+          "at": "2026-10-22T10:25",
+          "type": "change",
+          "text": "Final priority: Important → Preferable"
         }
       ],
       "createdAt": "2026-10-22",
       "updatedAt": "2026-10-22",
-      "rev": "2026-10-22T15:45:00.000Z",
-      "category": "ISSUE",
-      "expectedResolution": ""
+      "rev": "2026-10-22T16:25:32.259Z"
     },
     {
       "id": "REQ-001",
+      "category": "DEV REQUEST",
       "title": "Campaign discounts: scheduling flexibility (proration options, skipping non-consecutive billing cycles, upfront billing article) (CH-141401)",
       "period": "Sep 2026",
       "detectedDate": "2026-09-02",
+      "expectedResolution": "",
       "status": "In progress",
       "requestType": "ENHANCEMENT",
       "function": "BILLING",
@@ -1774,15 +1796,15 @@ window.ZENOTI_DATA = {
       ],
       "createdAt": "2026-10-22",
       "updatedAt": "2026-10-22",
-      "rev": "2026-10-22T18:00:00.000Z",
-      "category": "DEV REQUEST",
-      "expectedResolution": ""
+      "rev": "2026-10-22T18:00:00.000Z"
     },
     {
       "id": "REQ-002",
+      "category": "DEV REQUEST",
       "title": "Daily Collections By Item report: add an IVA 16% tax column for loyalty-point and gift-card redemptions (CH-161311)",
       "period": "Jul 2026",
       "detectedDate": "2026-07-23",
+      "expectedResolution": "",
       "status": "Assigned",
       "requestType": "ENHANCEMENT",
       "function": "REPORTING",
@@ -1857,15 +1879,15 @@ window.ZENOTI_DATA = {
       ],
       "createdAt": "2026-10-22",
       "updatedAt": "2026-10-22",
-      "rev": "2026-10-22T18:00:00.000Z",
-      "category": "DEV REQUEST",
-      "expectedResolution": ""
+      "rev": "2026-10-22T18:00:00.000Z"
     },
     {
       "id": "PRJ-001",
+      "category": "PROJECT",
       "title": "HSBC direct-debit (domiciliación) integration: move direct-debit processing from Scotiabank to HSBC (CH-161586)",
       "period": "Apr 2026",
       "detectedDate": "2026-04-22",
+      "expectedResolution": "",
       "status": "On hold – waiting on third party",
       "requestType": "ENHANCEMENT",
       "function": "INTEGRATION",
@@ -1961,9 +1983,7 @@ window.ZENOTI_DATA = {
       ],
       "createdAt": "2026-10-22",
       "updatedAt": "2026-10-22",
-      "rev": "2026-10-22T18:00:00.000Z",
-      "category": "PROJECT",
-      "expectedResolution": ""
+      "rev": "2026-10-22T18:00:00.000Z"
     }
   ]
 };
